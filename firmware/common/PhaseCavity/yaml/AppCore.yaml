@@ -14,7 +14,7 @@
 #include AppLlrfCore.yaml
 #include GenericMemory.yaml
 #include ClockManager.yaml
-#include RtmDigitalDebug.yaml
+#include RtmRfInterlock.yaml
 #include Si5317a.yaml
 #include BsssAxiStream.yaml
 
@@ -38,45 +38,10 @@ AppCore: &AppCore
       at:
         offset: 0x01000000      
     ##################################################  
-    RtmDigitalDebug:
-      <<: *RtmDigitalDebug
+    RtmRfInterlock:
+      <<: *RtmRfInterlock
       at:
         offset: 0x02000000 
-      children:     
-         Si5317a:
-            <<: *Si5317a
-            at:
-                offset: 0x00000000      
-    ##################################################      
-    SysGenWaveform_I:
-      class: MMIODev
-      configPrio: 1
-      at:
-        offset: 0x03000000      
-      size: 0x2000
-      description: "Sysgen waveform I"
-      children:
-        MemoryArray:
-          <<: *MemoryArray
-          sizeBits: 16
-          at:
-            offset: 0x0
-            nelms: 0x1000
-    ##################################################
-    SysGenWaveform_Q:
-      class: MMIODev
-      configPrio: 1
-      at:
-        offset: 0x04000000      
-      size: 0x2000
-      description: "Sysgen waveform Q"
-      children:
-        MemoryArray:
-          <<: *MemoryArray
-          sizeBits: 16
-          at:
-            offset: 0x0
-            nelms: 0x1000
     ##################################################
     Sysgen:
        <<: *AppLlrfCore

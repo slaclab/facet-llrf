@@ -12,11 +12,12 @@
 #include llrfDemod.yaml
 #include llrfUpconvert.yaml
 #include llrfPll.yaml
+#include LlrfFeedbackWrapper.yaml
 
 AppLlrfCore: &AppLlrfCore 
   name: AppLlrfCore
   description: Application LLRF Wrapper
-  size: 0x8000
+  size: 0x1000000
   class: MMIODev
   configPrio: 1
   ########
@@ -26,14 +27,19 @@ AppLlrfCore: &AppLlrfCore
     LlrfDemod:
       <<: *LlrfDemod
       at:
-        offset: 0x0000
+        offset: 0x000000
     #########################################################
     LlrfUpconvert:
       <<: *LlrfUpconvert
       at:
-        offset: 0x1000
+        offset: 0x100000
     #########################################################
     LlrfPll:
       <<: *LlrfPll
       at:
-        offset: 0x2000
+        offset: 0x200000
+    #########################################################
+    LlrfFeedbackWrapper:
+      <<: *LlrfFeedbackWrapper
+      at:
+        offset: 0x300000

@@ -371,9 +371,15 @@ begin
          diagnSevr   => diagnBus.sevr,
          diagnStrobe => diagnBus.strobe,
          rfSwitch       => s_fpgaInterlock,
-         trigPulse      => s_trigPulse,
+         trigPulse      => s_trigPulse(0),
+         timeslot       => timingTrig.dmod(127 downto 125),
          trigDaqOut     => trigHw,
          trigMode       => s_trigMode,
+         -- DAC SigGen
+         dacSigCtrl     => dacSigCtrl,
+         dacSigStatus   => dacSigStatus,
+         dacSigValids   => dacSigValids,
+         dacSigValues   => dacSigValues,
 
          -- AXI-Lite Port
          axiClk         => axilClk,
@@ -603,44 +609,35 @@ begin
 --   ----------------
 --   -- RTM Interface
 --   ----------------
-   U_RTM : entity work.RtmDigitalDebugV2
-     generic map (
-       TPD_G            => TPD_G,
-       REG_DOUT_EN_G    => x"FF", -- '1' = registered, '0' = unregistered
-       REG_DOUT_MODE_G  => x"F0", -- If registered enabled, '1' = clk output, '0' = data output
-       DIVCLK_DIVIDE_G  => 1,
-       CLKFBOUT_MULT_G  => 6,
-       CLKOUT0_DIVIDE_G => 6,
-       CLKOUT1_DIVIDE_G => 3)         -- drives the RTM's jitter clean input clock port
-     port map (
-       -- Digital I/O interface
-       dout            => s_dOut(7 downto 0),
-       cout            => s_dOut(7 downto 0),
-       din             => open,
-       -- Clock jitter cleaner
-       recClkIn        => timingClk,
-       recRstIn        => timingRst,
-       recClkOut       => s_cleanClk,
-       recRstOut       => s_cleanRst,
-       cleanClkOut     => open,
-       cleanClkLocked  => s_timingClk2x_locked,
-       -- AXI-Lite Interface
-       axilClk         => axilClk,
-       axilRst         => axilRst,
-       axilReadMaster  => axilReadMasters (RTM_INDEX_C),
-       axilReadSlave   => axilReadSlaves  (RTM_INDEX_C),
-       axilWriteMaster => axilWriteMasters(RTM_INDEX_C),
-       axilWriteSlave  => axilWriteSlaves (RTM_INDEX_C),
-       -----------------------
-       -- Application Ports --
-       -----------------------
-       -- RTM's Low Speed Ports
-       rtmLsP          => rtmLsP,
-       rtmLsN          => rtmLsN,
-       -- RTM's Clock Reference
-       genClkP         => genClkP,
-       genClkN         => genClkN);
-   s_dOut(7 downto 0) <= s_cleanClk(0) & s_cleanClk(1) & "0" & "0" & s_trigPulse(3) & s_trigPulse(2) & s_trigPulse(1) & s_timingClk2x_locked;
+   U_RTM : entity work.RtmRfInterlock
+      generic map (
+         TPD_G            => TPD_G,
+         IODELAY_GROUP_G  => IODELAY_GROUP_C,
+         AXIL_BASE_ADDR_G => AXI_CONFIG_C(RTM_INDEX_C).baseAddr)
+      port map (
+         -- Recovered EVR clock
+         recClk          => timingClk,
+         recRst          => timingRst,
+         -- Timing triggers
+         stndbyTrig      => s_trigPulse(1),
+         accelTrig       => s_trigPulse(2),
+         dataTrig        => s_trigPulse(3),
+         -- AXI-Lite Interface
+         axilClk         => axilClk,
+         axilRst         => axilRst,
+         axilReadMaster  => axilReadMasters(RTM_INDEX_C),
+         axilReadSlave   => axilReadSlaves(RTM_INDEX_C),
+         axilWriteMaster => axilWriteMasters(RTM_INDEX_C),
+         axilWriteSlave  => axilWriteSlaves(RTM_INDEX_C),
+         -----------------------
+         -- Application Ports --
+         -----------------------
+         -- RTM's Low Speed Ports
+         rtmLsP          => rtmLsP,
+         rtmLsN          => rtmLsN,
+         -- RTM's Clock Reference
+         genClkP         => genClkP,
+         genClkN         => genClkN);
 
    --------------------
    -- Common IDELAYCTRL
@@ -669,7 +666,6 @@ begin
    ibAppDebugSlave  <= AXI_STREAM_SLAVE_FORCE_C;
 
    mpsObSlaves <= (others => AXI_STREAM_SLAVE_FORCE_C);
-   dacSigCtrl  <= (others => DAC_SIG_CTRL_INIT_C);
    timingPhy   <= TIMING_PHY_INIT_C;
 
    freezeHw <= (others => '0');

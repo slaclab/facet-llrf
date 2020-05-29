@@ -33,9 +33,11 @@ use work.AxiLitePkg.all;
 use work.AxiStreamPkg.all;
 use work.Jesd204bPkg.all;
 use work.AmcCarrierPkg.all;
+use work.AppTopPkg.all;
 use work.EthMacPkg.all;
 use work.SsiPkg.all;
 use work.LlrfPkg.all;
+
 
 entity AppLlrfCore is
    generic (
@@ -53,7 +55,8 @@ entity AppLlrfCore is
       
       -- Timing pulse trigger
       -- Note: Asynchronous
-      trigPulse      : in  slv(NUM_OF_TRIG_PULSES_G-1 downto 0);
+      trigPulse      : in  sl;
+      timeslot       : in  slv(2 downto 0);
       trigDaqOut     : out slv(1 downto 0);
       
       -- JESD ADC
@@ -80,6 +83,12 @@ entity AppLlrfCore is
 
       -- LLRF Mode Select
       trigMode       : out slv(1 downto 0);
+
+      -- DacSigCtrl
+      dacSigCtrl          : out   DacSigCtrlArray(1 downto 0);
+      dacSigStatus        : in    DacSigStatusArray(1 downto 0);
+      dacSigValids        : in    Slv7Array(1 downto 0);
+      dacSigValues        : in    sampleDataVectorArray(1 downto 0, 6 downto 0);
             
       -- AXI-Lite Port
       axiClk         : in  sl;
@@ -124,7 +133,7 @@ architecture mapping of AppLlrfCore is
    signal af357 : DdcType;
    signal af204 : DdcType;
 
-   signal trigPulseSync    : slv(NUM_OF_TRIG_PULSES_G-1 downto 0);
+   signal trigPulseSync    : sl;
 
    signal userDacControl    : slv(15 downto 0) := (others=>'0');
    signal userdaccontrol204 : slv(15 downto 0) := (others=>'0');
@@ -139,7 +148,7 @@ architecture mapping of AppLlrfCore is
    constant STREAM_INDEX_C    : natural := 4;
    constant NUM_MASTERS_C     : natural := 5;
    
-   constant AXI_XBAR_CONFIG_C : AxiLiteCrossbarMasterConfigArray(NUM_MASTERS_C-1 downto 0) := genAxiLiteConfig( NUM_MASTERS_C, AXI_BASE_ADDR_G, 16, 12);
+   constant AXI_XBAR_CONFIG_C : AxiLiteCrossbarMasterConfigArray(NUM_MASTERS_C-1 downto 0) := genAxiLiteConfig( NUM_MASTERS_C, AXI_BASE_ADDR_G, 24, 20);
 
    signal readMaster  : AxiLiteReadMasterArray (AXI_XBAR_CONFIG_C'range);
    signal readSlave   : AxiLiteReadSlaveArray  (AXI_XBAR_CONFIG_C'range);
@@ -163,6 +172,17 @@ architecture mapping of AppLlrfCore is
 
    signal diagnDataV : slv(1023 downto 0);
    signal diagnSevrV : slv(63 downto 0);
+
+   signal iDemodHs : Slv18Array(9 downto 0);
+   signal qDemodHs : Slv18Array(9 downto 0);
+
+   signal iSigGen : slv(31 downto 0);
+   signal qSigGen : slv(31 downto 0);
+
+   signal iSigGenFb : slv(17 downto 0);
+   signal qSigGenFb : slv(17 downto 0);
+
+   signal timeslotIn : slv(4 downto 0) := (others => '0');
    
    constant DEBUG_C : boolean := false;
 
@@ -227,18 +247,8 @@ begin
      port map (
        clk       => jesdClk2x(1),
        rst       => jesdRst2x(1),
-       dataIn    => trigPulse(0),
-       dataOut   => trigPulseSync(0) );
-      
-   U_TimingRstSync: entity work.SynchronizerOneShot
-     generic map (
-       TPD_G         => TPD_G,
-       PULSE_WIDTH_G => 1 )
-     port map (
-       clk       => dspClk204,
-       rst       => dspRst204,
-       dataIn    => trigPulse(1),
-       dataOut   => trigPulseSync(1) );
+       dataIn    => trigPulse,
+       dataOut   => trigPulseSync);
       
    ---------------------------
    -- SYNC Inputs to Bay1 clk
@@ -307,7 +317,7 @@ begin
        adc1_3                => adc357(1, 3),
        adc1_4                => adc357(1, 4),
        adc1_5                => adc357(1, 5),
-       sync(0)               => trigPulseSync(0),
+       sync(0)               => trigPulseSync,
        -- DDC I/Q interface (jesdClk2x domain)
        ddci                  => iq357.i_or_a,
        ddcq                  => iq357.q_or_f,
@@ -322,6 +332,27 @@ begin
        phaseampsync(0)       => af357.sync,
        phaseamptlast(0)      => af357.tLast,
        phaseampvalid(0)      => af357.valid,
+       -- Full rate demod data
+       i0_0                  => iDemodHs(0), 
+       q0_0                  => qDemodHs(0),
+       i0_1                  => iDemodHs(1), 
+       q0_1                  => qDemodHs(1),
+       i0_2                  => iDemodHs(2), 
+       q0_2                  => qDemodHs(2),
+       i0_3                  => iDemodHs(3), 
+       q0_3                  => qDemodHs(3),
+       i0_4                  => iDemodHs(4), 
+       q0_4                  => qDemodHs(4),
+       i0_5                  => iDemodHs(5), 
+       q0_5                  => qDemodHs(5),
+       i1_0                  => iDemodHs(6), 
+       q1_0                  => qDemodHs(6),
+       i1_1                  => iDemodHs(7), 
+       q1_1                  => qDemodHs(7),
+       i1_2                  => iDemodHs(8), 
+       q1_2                  => qDemodHs(8),
+       i1_3                  => iDemodHs(9), 
+       q1_3                  => qDemodHs(9),
        -- AXI-Lite Interface
        axi_lite_clk           => axiClk,
        axi_lite_aresetn       => axiRstL,
@@ -384,9 +415,9 @@ begin
 	 phaseampvalid(0) => af357.valid,
 	 phaseampchannel  => af357.channel,
 	 phaseamptlast(0) => af357.tLast,
-         seti             => iout357,
-         setq             => qout357,
-	 dacout           => dacHs357,
+         seti             => iSigGenFb,
+         setq             => qSigGenFb,
+     	 dacout           => dacHs357,
          dacoutvalid(0)   => dacHsValid357,
          --  AXI-Lite Interface
          axi_lite_clk           => axiClk,
@@ -409,52 +440,33 @@ begin
          axi_lite_s_axi_rresp   => readSlave  (UPCONVERT_INDEX_C).rresp,
          axi_lite_s_axi_rvalid  => readSlave  (UPCONVERT_INDEX_C).rvalid );
 
-   U_MODEL : entity work.example_stub
+
+   iSigGen      <= dacSigValues(1, 0); 
+   qSigGen      <= dacSigValues(1, 1); 
+   dacSigCtrl(0).start <= (others => '0');
+   dacSigCtrl(1).start <= (others => trigPulseSync);
+
+   timeslotIn(2 downto 0) <= timeslot;
+
+   U_MODEL : entity work.LlrfFeedbackWrapper
      port map (
-       dsp_clk                => dspClk204,
-       dsp_rst                => dspRst204,
-       gateway_in             => (others=>'0'),
-       gateway_in2            => trigPulseSync(1 downto 1),
-       -- demodulator output
-       ddcchannel             => iq204.channel,
-       ddci                   => iq204.i_or_a,
-       ddcq                   => iq204.q_or_f,
-       ddcsync(0)             => iq204.sync,
-       amp                    => af204.i_or_a,
-       phase                  => af204.q_or_f,
-       phaseampchannel        => af204.channel,
-       phaseampsync(0)        => af204.sync,
-       -- DaqMux input
-       debugvalid             => debug204_valid,
-       debugdata              => debug204_data,
-       debugsync(0)           => debug204_sync,
-       -- diagnostic bus input
-       diagnclk               => diagnClk,
-       diagnrst               => diagnRst,
-       diagndata              => diagnDataV,
-       diagnfixed             => diagnFixed,
-       diagnsevr              => diagnSevrV,
-       diagnsync              => diagnStrobe,
-       -- register bus
-       axi_lite_clk           => axiClk,
-       axi_lite_aresetn       => axiRstL,
-       axi_lite_s_axi_awaddr  => writeMaster(MODEL_INDEX_C).awaddr(11 downto 0),
-       axi_lite_s_axi_awvalid => writeMaster(MODEL_INDEX_C).awvalid,
-       axi_lite_s_axi_wdata   => writeMaster(MODEL_INDEX_C).wdata,
-       axi_lite_s_axi_wstrb   => writeMaster(MODEL_INDEX_C).wstrb,
-       axi_lite_s_axi_wvalid  => writeMaster(MODEL_INDEX_C).wvalid,
-       axi_lite_s_axi_bready  => writeMaster(MODEL_INDEX_C).bready,
-       axi_lite_s_axi_araddr  => readMaster (MODEL_INDEX_C).araddr(11 downto 0),
-       axi_lite_s_axi_arvalid => readMaster (MODEL_INDEX_C).arvalid,
-       axi_lite_s_axi_rready  => readMaster (MODEL_INDEX_C).rready,
-       axi_lite_s_axi_awready => writeSlave (MODEL_INDEX_C).awready,
-       axi_lite_s_axi_wready  => writeSlave (MODEL_INDEX_C).wready,
-       axi_lite_s_axi_bresp   => writeSlave (MODEL_INDEX_C).bresp,
-       axi_lite_s_axi_bvalid  => writeSlave (MODEL_INDEX_C).bvalid,
-       axi_lite_s_axi_arready => readSlave  (MODEL_INDEX_C).arready,
-       axi_lite_s_axi_rdata   => readSlave  (MODEL_INDEX_C).rdata,
-       axi_lite_s_axi_rresp   => readSlave  (MODEL_INDEX_C).rresp,
-       axi_lite_s_axi_rvalid  => readSlave  (MODEL_INDEX_C).rvalid );
+       jesdClk2x              => jesdClk2x(1),
+       jesdRst2x              => jesdRst2x(1),
+       trigIn                 => trigPulse, -- sync'd inside
+       timeslotIn             => timeslotIn,
+       demodI                 => iDemodHs,
+       demodQ                 => qDemodHs,
+       pulseInI               => iSigGen(15 downto 0),
+       pulseInQ               => qSigGen(15 downto 0),
+       pulseOutI              => iSigGenFb,
+       pulseOutQ              => qSigGenFb,
+       modeOut                => open,
+       axilClk                => axiClk,
+       axilRst                => axiRst,
+       axilReadMaster         => readMaster(MODEL_INDEX_C),
+       axilReadSlave          => readSlave(MODEL_INDEX_C),
+       axilWriteMaster        => writeMaster(MODEL_INDEX_C),
+       axilWriteSlave         => writeSlave(MODEL_INDEX_C));
 
    -- Need to translate debug waveforms to jesdClk(0) domain
    GEN_DAQ : for i in 7 downto 0 generate

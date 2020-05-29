@@ -33,6 +33,11 @@ package LlrfPkg is
     q1     : Slv18Array(3 downto 0);
   end record;
 
+  type Iq16Type is record
+    i      : slv(15 downto 0);
+    q      : slv(15 downto 0);
+  end record;
+
   constant IQ18_INIT_C : Iq18Type := (
     i0     => (others=>(others=>'0')),
     q0     => (others=>(others=>'0')),
