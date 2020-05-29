@@ -13,3 +13,6 @@
 [submodule "firmware/submodules/surf"]
 	path = firmware/submodules/surf
 	url = git@github.com:slaclab/surf
+[submodule "firmware/submodules/llrf-core"]
+	path = firmware/submodules/llrf-core
+	url = git@github.com:slaclab/llrf-core
