@@ -216,6 +216,9 @@ begin
             0                 => DEV_CLK0_SEL_C,  -- AmcDwnConvt@Version2 = AB6/AB5
             1                 => DEV_CLK0_SEL_C),  -- AmcUpConvt@Version2 = M6/M5
          -- Signal Generator Generics
+         SIG_GEN_SIZE_G       => (
+            0                 => 0,
+            1                 => 2),
          SIG_GEN_ADDR_WIDTH_G => (others => 12),         -- 4096 elements
          SIG_GEN_LANE_MODE_G  => (others => "1111111"),  -- 16-bit outputs SigValues(15:0)
          SIG_GEN_RAM_CLK_G    => (others => "0000000"))  -- jesdClk2x
