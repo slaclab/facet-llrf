@@ -451,7 +451,7 @@ begin
    U_MODEL : entity work.LlrfFeedbackWrapper
      generic map (
        TPD_G                => TPD_G,
-       AXI_BASE_ADDR_G      => AXI_CONFIG_C(MODEL_INDEX_C).baseAddr)
+       AXI_BASE_ADDR_G      => AXI_XBAR_CONFIG_C(MODEL_INDEX_C).baseAddr)
      port map (
        jesdClk2x              => jesdClk2x(1),
        jesdRst2x              => jesdRst2x(1),
