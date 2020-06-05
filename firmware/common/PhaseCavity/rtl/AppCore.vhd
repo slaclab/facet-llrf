@@ -371,8 +371,10 @@ begin
          diagnSevr   => diagnBus.sevr,
          diagnStrobe => diagnBus.strobe,
          rfSwitch       => s_fpgaInterlock,
+         timingClk      => timingClk,
          trigPulse      => s_trigPulse(0),
          timeslot       => timingTrig.dmod(127 downto 125),
+         timestamp      => timingTrig.dmod(191 downto 0),
          trigDaqOut     => trigHw,
          trigMode       => s_trigMode,
          -- DAC SigGen
@@ -390,10 +392,10 @@ begin
          axiWriteSlave  => axilWriteSlaves (SYSGEN_INDEX_C),
 
          -- Streaming port
-         streamClk      => '0',
-         streamRst      => '1',
-         streamMaster   => open,
-         streamSlave    => AXI_STREAM_SLAVE_FORCE_C );
+         streamClk      => axilClk,
+         streamRst      => axilRst,
+         streamMaster   => obAppDebugMaster,
+         streamSlave    => obAppDebugSlave );
 
    GEN_LCLS_I : if APP_TIMING_MODE_C = 1 generate
      V2FV1 : entity work.EvrV2FromV1

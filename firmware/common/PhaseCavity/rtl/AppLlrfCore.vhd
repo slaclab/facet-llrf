@@ -55,8 +55,10 @@ entity AppLlrfCore is
       
       -- Timing pulse trigger
       -- Note: Asynchronous
+      timingClk      : in  sl;
       trigPulse      : in  sl;
       timeslot       : in  slv(2 downto 0);
+      timestamp      : in  slv(191 downto 0);
       trigDaqOut     : out slv(1 downto 0);
       
       -- JESD ADC
@@ -182,7 +184,8 @@ architecture mapping of AppLlrfCore is
    signal iSigGenFb : slv(17 downto 0);
    signal qSigGenFb : slv(17 downto 0);
 
-   signal timeslotIn : slv(4 downto 0) := (others => '0');
+   signal timeslotIn  : slv(4 downto 0)   := (others => '0');
+   signal timestampIn : slv(191 downto 0) := (others => '0');
    
    constant DEBUG_C : boolean := false;
 
@@ -455,21 +458,27 @@ begin
      port map (
        jesdClk2x              => jesdClk2x(1),
        jesdRst2x              => jesdRst2x(1),
+       timingClk              => timingClk,
        trigIn                 => trigPulse, -- sync'd inside
        timeslotIn             => timeslotIn,
+       timestampIn            => timestamp,
        demodI                 => iDemodHs,
        demodQ                 => qDemodHs,
        pulseInI               => iSigGen(15 downto 0),
        pulseInQ               => qSigGen(15 downto 0),
        pulseOutI              => iSigGenFb,
        pulseOutQ              => qSigGenFb,
-       modeOut                => open,
+       modeOut                => trigMode,
        axilClk                => axiClk,
        axilRst                => axiRst,
        axilReadMaster         => readMaster(MODEL_INDEX_C),
        axilReadSlave          => readSlave(MODEL_INDEX_C),
        axilWriteMaster        => writeMaster(MODEL_INDEX_C),
-       axilWriteSlave         => writeSlave(MODEL_INDEX_C));
+       axilWriteSlave         => writeSlave(MODEL_INDEX_C),
+       streamClk      => streamClk,
+       streamRst      => streamRst,
+       streamMaster   => streamMaster,
+       streamSlave    => streamSlave);
 
    -- Need to translate debug waveforms to jesdClk(0) domain
    GEN_DAQ : for i in 7 downto 0 generate
@@ -506,7 +515,6 @@ begin
    streamMaster <= AXI_STREAM_MASTER_INIT_C;
    
 -- TODO tie to dsp core 
-   trigMode <= "10";
    rfSwitch <= '1';
      
 end mapping;
