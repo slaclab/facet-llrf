@@ -91,7 +91,7 @@ NetIODev:
          SRP:
            protocolVersion: SRP_UDP_NONE
          UDP:
-           port: 8193
+           port: 8194
          RSSI: yes
          stripHeader: yes
          depack:
