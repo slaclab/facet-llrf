@@ -661,10 +661,8 @@ begin
    obBpMsgClientMaster <= AXI_STREAM_MASTER_INIT_C;
    ibBpMsgClientSlave  <= AXI_STREAM_SLAVE_FORCE_C;
 
-   --obBpMsgServerMaster <= AXI_STREAM_MASTER_INIT_C;
    ibBpMsgServerSlave  <= AXI_STREAM_SLAVE_FORCE_C;
 
-   obAppDebugMaster <= AXI_STREAM_MASTER_INIT_C;
    ibAppDebugSlave  <= AXI_STREAM_SLAVE_FORCE_C;
 
    mpsObSlaves <= (others => AXI_STREAM_SLAVE_FORCE_C);

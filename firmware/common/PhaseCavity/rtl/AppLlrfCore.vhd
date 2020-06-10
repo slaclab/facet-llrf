@@ -512,8 +512,6 @@ begin
    trigDaqOut (0)      <= debug185(0).sync;
    trigDaqOut (1)      <= debug185(4).sync;
    
-   streamMaster <= AXI_STREAM_MASTER_INIT_C;
-   
 -- TODO tie to dsp core 
    rfSwitch <= '1';
      
