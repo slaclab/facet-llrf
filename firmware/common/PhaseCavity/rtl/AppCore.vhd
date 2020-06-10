@@ -375,6 +375,7 @@ begin
          trigPulse      => s_trigPulse(0),
          timeslot       => timingTrig.dmod(127 downto 125),
          timestamp      => timingTrig.dmod(191 downto 0),
+	 bsa            => timingTrig.bsa(127 downto 0),
          trigDaqOut     => trigHw,
          trigMode       => s_trigMode,
          -- DAC SigGen

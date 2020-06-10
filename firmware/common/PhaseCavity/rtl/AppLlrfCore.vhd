@@ -59,6 +59,7 @@ entity AppLlrfCore is
       trigPulse      : in  sl;
       timeslot       : in  slv(2 downto 0);
       timestamp      : in  slv(191 downto 0);
+      bsa            : in  slv(127 downto 0);
       trigDaqOut     : out slv(1 downto 0);
       
       -- JESD ADC
@@ -462,6 +463,7 @@ begin
        trigIn                 => trigPulse, -- sync'd inside
        timeslotIn             => timeslotIn,
        timestampIn            => timestamp,
+       bsaIn                  => bsa,
        demodI                 => iDemodHs,
        demodQ                 => qDemodHs,
        pulseInI               => iSigGen(15 downto 0),
