@@ -5,6 +5,6 @@ use work.StdRtlPkg.all;
 package AppOpts is
 
   constant APP_TIMING_MODE_C : integer := 1; -- 1 or 2 (LCLS-I/II)
-  constant UPCONVERT_V2_C    : boolean := false;
+  constant UPCONVERT_V2_C    : boolean := true;
   
 end AppOpts;

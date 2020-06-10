@@ -560,54 +560,107 @@ begin
    -----------------------
    -- AMC BAY[1] Interface
    -----------------------
-   U_AMC1 : entity work.AmcMrLlrfUpConvertCore
-      generic map (
-         TPD_G              => TPD_G,
-         IODELAY_GROUP_G    => IODELAY_GROUP_C,
-         AXI_BASE_ADDR_G    => AXI_CONFIG_C(AMC1_INDEX_C).baseAddr,
-         TIMING_TRIG_MODE_G => TRUE)  -- Clock will be outpout on timingTrig port
-      port map (
-         -- JESD SYNC Interface
-         jesdClk         => jesdClk(1),
-         jesdRst         => jesdRst(1),
-         jesdClk2x       => jesdClk2x(1),
-         jesdRst2x       => jesdRst2x(1),
-         jesdSysRef      => jesdSysRef(1),
-         jesdRxSync      => jesdRxSync(1),
-         -- DAC Interface (jesdClk domain)
-         dacValues       => s_dacHs,
-         recClk          => timingClk,
-         recRst          => timingRst,
-         -- Interlock and trigger
-         timingTrig      => s_trigClock,
-         fpgaInterlock   => s_fpgaInterlock,
-         -- AXI-Lite Interface
-         axilClk         => axilClk,
-         axilRst         => axilRst,
-         axilReadMaster  => axilReadMasters (AMC1_INDEX_C),
-         axilReadSlave   => axilReadSlaves  (AMC1_INDEX_C),
-         axilWriteMaster => axilWriteMasters(AMC1_INDEX_C),
-         axilWriteSlave  => axilWriteSlaves (AMC1_INDEX_C),
-         -----------------------
-         -- Application Ports --
-         -----------------------
-         -- AMC's JTAG Ports
-         jtagPri         => jtagPri(1),
-         jtagSec         => jtagSec(1),
-         -- AMC's FPGA Clock Ports
-         fpgaClkP        => fpgaClkP(1),
-         fpgaClkN        => fpgaClkN(1),
-         -- AMC's System Reference Ports
-         sysRefP         => sysRefP(1),
-         sysRefN         => sysRefN(1),
-         -- AMC's Sync Ports
-         syncInP         => syncInP(1),
-         syncInN         => syncInN(1),
-         syncOutP        => syncOutP(1),
-         syncOutN        => syncOutN(1),
-         -- AMC's Spare Ports
-         spareP          => spareP(1),
-         spareN          => spareN(1));
+   U_UPCONVERT_V1 : if (UPCONVERT_V2_C = false) generate
+      U_AMC1 : entity work.AmcMrLlrfUpConvertCore
+         generic map (
+            TPD_G              => TPD_G,
+            IODELAY_GROUP_G    => IODELAY_GROUP_C,
+            AXI_BASE_ADDR_G    => AXI_CONFIG_C(AMC1_INDEX_C).baseAddr,
+            TIMING_TRIG_MODE_G => TRUE)  -- Clock will be outpout on timingTrig port
+         port map (
+            -- JESD SYNC Interface
+            jesdClk         => jesdClk(1),
+            jesdRst         => jesdRst(1),
+            jesdClk2x       => jesdClk2x(1),
+            jesdRst2x       => jesdRst2x(1),
+            jesdSysRef      => jesdSysRef(1),
+            jesdRxSync      => jesdRxSync(1),
+            -- DAC Interface (jesdClk domain)
+            dacValues       => s_dacHs,
+            recClk          => timingClk,
+            recRst          => timingRst,
+            -- Interlock and trigger
+            timingTrig      => s_trigClock,
+            fpgaInterlock   => s_fpgaInterlock,
+            -- AXI-Lite Interface
+            axilClk         => axilClk,
+            axilRst         => axilRst,
+            axilReadMaster  => axilReadMasters (AMC1_INDEX_C),
+            axilReadSlave   => axilReadSlaves  (AMC1_INDEX_C),
+            axilWriteMaster => axilWriteMasters(AMC1_INDEX_C),
+            axilWriteSlave  => axilWriteSlaves (AMC1_INDEX_C),
+            -----------------------
+            -- Application Ports --
+            -----------------------
+            -- AMC's JTAG Ports
+            jtagPri         => jtagPri(1),
+            jtagSec         => jtagSec(1),
+            -- AMC's FPGA Clock Ports
+            fpgaClkP        => fpgaClkP(1),
+            fpgaClkN        => fpgaClkN(1),
+            -- AMC's System Reference Ports
+            sysRefP         => sysRefP(1),
+            sysRefN         => sysRefN(1),
+            -- AMC's Sync Ports
+            syncInP         => syncInP(1),
+            syncInN         => syncInN(1),
+            syncOutP        => syncOutP(1),
+            syncOutN        => syncOutN(1),
+            -- AMC's Spare Ports
+            spareP          => spareP(1),
+            spareN          => spareN(1));
+   end generate;
+
+   U_UPCONVERT_V2 : if (UPCONVERT_V2_C = true) generate
+      U_AMC1 : entity work.AmcMrLlrfGen2UpConvert
+         generic map (
+            TPD_G              => TPD_G,
+            IODELAY_GROUP_G    => IODELAY_GROUP_C,
+            AXI_BASE_ADDR_G    => AXI_CONFIG_C(AMC1_INDEX_C).baseAddr,
+            TIMING_TRIG_MODE_G => TRUE)  -- Clock will be outpout on timingTrig port
+         port map (
+            -- JESD SYNC Interface
+            jesdClk         => jesdClk(1),
+            jesdRst         => jesdRst(1),
+            jesdClk2x       => jesdClk2x(1),
+            jesdRst2x       => jesdRst2x(1),
+            jesdSysRef      => jesdSysRef(1),
+            jesdRxSync      => jesdRxSync(1),
+	    jesdTxSync      => jesdTxSync(1),
+            -- DAC Interface (jesdClk domain)
+            recClk          => timingClk,
+            recRst          => timingRst,
+            -- Interlock and trigger
+            timingTrig      => s_trigClock,
+            fpgaInterlock   => s_fpgaInterlock,
+            -- AXI-Lite Interface
+            axilClk         => axilClk,
+            axilRst         => axilRst,
+            axilReadMaster  => axilReadMasters(AMC1_INDEX_C),
+            axilReadSlave   => axilReadSlaves(AMC1_INDEX_C),
+            axilWriteMaster => axilWriteMasters(AMC1_INDEX_C),
+            axilWriteSlave  => axilWriteSlaves(AMC1_INDEX_C),
+            -----------------------
+            -- Application Ports --
+            -----------------------
+            -- AMC's JTAG Ports
+            jtagPri         => jtagPri(1),
+            jtagSec         => jtagSec(1),
+            -- AMC's FPGA Clock Ports
+            fpgaClkP        => fpgaClkP(1),
+            fpgaClkN        => fpgaClkN(1),
+            -- AMC's System Reference Ports
+            sysRefP         => sysRefP(1),
+            sysRefN         => sysRefN(1),
+            -- AMC's Sync Ports
+            syncInP         => syncInP(1),
+            syncInN         => syncInN(1),
+            syncOutP        => syncOutP(1),
+            syncOutN        => syncOutN(1),
+            -- AMC's Spare Ports
+            spareP          => spareP(1),
+            spareN          => spareN(1));
+   end generate;
 
 --   ----------------
 --   -- RTM Interface
