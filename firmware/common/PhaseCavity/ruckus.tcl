@@ -11,7 +11,7 @@ loadIpCore -path "$::DIR_PATH/coregen/ila_0.xci"
 
 if { $::env(AMC_TYPE_BAY1) == "AmcMrLlrfGen2UpConvert" } {
     loadRuckusTcl "$::DIR_PATH/yamlConfigGen2"
-} elseif { $::env(RTM_INTF) == "AmcMrLlrfUpConvert" } {
+} elseif { $::env(AMC_TYPE_BAY1) == "AmcMrLlrfUpConvert" } {
     loadRuckusTcl "$::DIR_PATH/yamlConfigGen1"
 }
 
