@@ -28,13 +28,13 @@ AppCore: &AppCore
   children:
   ########
     ##################################################     
-    AmcMrLlrfGen2UpConvert:
-      <<: *AmcMrLlrfGen2UpConvert
+    AmcMrLlrfDownConvert:
+      <<: *AmcMrLlrfDownConvert
       at:
         offset: 0x00000000      
     ################################################## 
-    AmcMrLlrfUpConvert:
-      <<: *AmcMrLlrfUpConvert
+    AmcMrLlrfGen2UpConvert:
+      <<: *AmcMrLlrfGen2UpConvert
       at:
         offset: 0x01000000      
     ##################################################  
