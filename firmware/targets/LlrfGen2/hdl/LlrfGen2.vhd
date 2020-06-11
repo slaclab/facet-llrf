@@ -147,6 +147,16 @@ end LlrfGen2;
 
 architecture top_level of LlrfGen2 is
 
+   -- Custom routes for Gen2 AMC
+   constant JESD_TX_ROUTES_C : AppTopJesdRouteType := (
+      0 => 2,
+      1 => 3,
+      2 => 0,
+      3 => 1,
+      4 => 4,
+      5 => 5,
+      6 => 6);
+
    -- AXI-Lite Interface (axilClk domain)
    signal axilClk              : sl;
    signal axilRst              : sl;
@@ -207,11 +217,11 @@ begin
          -- JESD Generics
          JESD_DRP_EN_G        => false,           -- Configured by application
          JESD_RX_LANE_G       => (others => 6),   -- Configured by application
-         JESD_TX_LANE_G       => (others => 0),   -- Configured by application
+         JESD_TX_LANE_G       => (0 => 0, 1 => 7),   -- Configured by application
          JESD_RX_POLARITY_G   => (others => "0111111"),  -- Configured by application
-         JESD_TX_POLARITY_G   => (others => "0000000"),  -- Configured by application
+         JESD_TX_POLARITY_G   => (others => "0001010"),  -- Configured by application
          JESD_RX_ROUTES_G     => (others => JESD_ROUTES_INIT_C),  -- Configured by application
-         JESD_TX_ROUTES_G     => (others => JESD_ROUTES_INIT_C),  -- Configured by application            
+         JESD_TX_ROUTES_G     => (others => JESD_TX_ROUTES_C),  -- Configured by application            
          JESD_REF_SEL_G       => (      -- Configured by application
             0                 => DEV_CLK0_SEL_C,  -- AmcDwnConvt@Version2 = AB6/AB5
             1                 => DEV_CLK0_SEL_C),  -- AmcUpConvt@Version2 = M6/M5
