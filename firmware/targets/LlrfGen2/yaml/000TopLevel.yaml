@@ -54,7 +54,7 @@ mmio: &mmio
         AppCore:
           children:
             BLD:
-              instantiate: true
+              instantiate: false
             BSSS:
               instantiate: true
     ##################################################
