@@ -1,16 +1,16 @@
 ##############################################################################
 ## This file is part of 'SLAC Firmware Standard Library'.
-## It is subject to the license terms in the LICENSE.txt file found in the 
-## top-level directory of this distribution and at: 
-##    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-## No part of 'SLAC Firmware Standard Library', including this file, 
-## may be copied, modified, propagated, or distributed except according to 
+## It is subject to the license terms in the LICENSE.txt file found in the
+## top-level directory of this distribution and at:
+##    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+## No part of 'SLAC Firmware Standard Library', including this file,
+## may be copied, modified, propagated, or distributed except according to
 ## the terms contained in the LICENSE.txt file.
 ##############################################################################
 #schemaversion 3.0.0
 #once BsssAxiStream.yaml
 
-BsssAxiStream: &BsssAxiStream 
+BsssAxiStream: &BsssAxiStream
   name: BsssAxiStream
   description: Beam Synchronous Scalar Service
   size: 0x8000
@@ -163,7 +163,7 @@ BsssAxiStream: &BsssAxiStream
       lsBit: 7
       mode: RW
       description: Enable EDEF
-    #########################################################  
+    #########################################################
     EdefRateLimit:
       at:
         offset: 0x44
@@ -272,7 +272,7 @@ BsssAxiStream: &BsssAxiStream
           class: Enum
           value: 31
       description: Rate Limit
-    #########################################################  
+    #########################################################
     EdefRateSel:
       at:
         offset: 0x40
@@ -284,7 +284,7 @@ BsssAxiStream: &BsssAxiStream
       lsBit: 0
       mode: RW
       description: Rate select
-    #########################################################  
+    #########################################################
     EdefDestSel:
       at:
         offset: 0x41
