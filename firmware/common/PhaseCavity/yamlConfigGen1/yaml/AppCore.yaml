@@ -16,7 +16,8 @@
 #include ClockManager.yaml
 #include RtmRfInterlock.yaml
 #include Si5317a.yaml
-#include BsssAxiStream.yaml
+#include BsssAxiStream_2.yaml
+#include BsssAxiStream_8.yaml
 
 AppCore: &AppCore
   name: AppCore
@@ -54,12 +55,12 @@ AppCore: &AppCore
 #        offset: 0x06000000
     ##################################################
     BSSS:
-       <<: *BsssAxiStream
+       <<: *BsssAxiStream_8
        at:
         offset: 0x07000000
     ##################################################
     BLD:
-       <<: *BsssAxiStream
+       <<: *BsssAxiStream_2
        at:
         offset: 0x08000000
     ##################################################
