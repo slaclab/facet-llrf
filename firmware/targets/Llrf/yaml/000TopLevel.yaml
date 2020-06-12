@@ -38,12 +38,8 @@ mmio: &mmio
           children:
             JesdRx:
               instantiate: true
-              metadata:
-                numRxLanes: &numRxLanes 6
             JesdTx:
               instantiate: false
-              metadata:
-                numTxLanes: &numTxLanes 0
         DacSigGen:
           <<: *DacSigGen
           at:
@@ -59,12 +55,8 @@ mmio: &mmio
           children:
             BLD:
               instantiate: true
-              metadata:
-                numEdefs: &numEdefs 2
             BSSS:
               instantiate: true
-              metadata:
-                numEdefs: &numEdefs 8
     ##################################################
 
 strm: &strm
