@@ -25,6 +25,9 @@ mmio: &mmio
         <<: *AmcCarrierCore
         at:
           offset: 0x00000000
+        children:
+          AppMps:
+            instantiate: false
     ##################################################
     AppTop:
       <<: *AppTop
