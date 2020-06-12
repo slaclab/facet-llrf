@@ -8,16 +8,16 @@
 ## the terms contained in the LICENSE.txt file.
 ##############################################################################
 #schemaversion 3.0.0
-#once BsssAxiStream.yaml
+#once BsssAxiStream_8.yaml
 
-BsssAxiStream: &BsssAxiStream
+BsssAxiStream_8: &BsssAxiStream_8
   name: BsssAxiStream
-  description: Beam Synchronous Scalar Service
+  description: "Beam Synchronous Scalar Service (8 Edefs)"
   size: 0x8000
   class: MMIODev
   configPrio: 1
   metadata:
-    numEdefs: &numEdefs 16
+    numEdefs: &numEdefs 8
   ########
   children:
   ########

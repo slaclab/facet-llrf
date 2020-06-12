@@ -1,10 +1,10 @@
 ##############################################################################
 ## This file is part of 'LCLS2 Common Carrier Core'.
-## It is subject to the license terms in the LICENSE.txt file found in the 
-## top-level directory of this distribution and at: 
-##    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-## No part of 'LCLS2 Common Carrier Core', including this file, 
-## may be copied, modified, propagated, or distributed except according to 
+## It is subject to the license terms in the LICENSE.txt file found in the
+## top-level directory of this distribution and at:
+##    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+## No part of 'LCLS2 Common Carrier Core', including this file,
+## may be copied, modified, propagated, or distributed except according to
 ## the terms contained in the LICENSE.txt file.
 ##############################################################################
 #schemaversion 3.0.0
@@ -24,23 +24,22 @@ mmio: &mmio
     AmcCarrierCore:
         <<: *AmcCarrierCore
         at:
-          offset: 0x00000000  
-    ##################################################     
+          offset: 0x00000000
+        children:
+          AppMps:
+            instantiate: false
+    ##################################################
     AppTop:
       <<: *AppTop
       at:
         offset: 0x80000000
-      children: 
+      children:
         AppTopJesd:
           children:
             JesdRx:
-              instantiate: true              
-              metadata:
-                numRxLanes: &numRxLanes 6
+              instantiate: true
             JesdTx:
-              instantiate: false              
-              metadata: 
-                numTxLanes: &numTxLanes 0              
+              instantiate: false
         DacSigGen:
           <<: *DacSigGen
           at:
@@ -51,18 +50,14 @@ mmio: &mmio
               children:
                 MemoryArray:
                   at:
-                    nelms: 0x1000 
+                    nelms: 0x1000
         AppCore:
           children:
             BLD:
-              instantiate: true
-              metadata:
-                numEdefs: &numEdefs 2
+              instantiate: false
             BSSS:
               instantiate: true
-              metadata:
-                numEdefs: &numEdefs 8
-    ################################################## 
+    ##################################################
 
 strm: &strm
   size: 0x100000000 # 4GB of address space
@@ -71,8 +66,8 @@ strm: &strm
       AmcCarrierDRAM:
           <<: *AmcCarrierDRAM
           at:
-            offset: 0x00000000      
-  
+            offset: 0x00000000
+
 NetIODev:
   ipAddr: 10.0.1.105
   class: NetIODev
