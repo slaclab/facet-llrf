@@ -93,6 +93,7 @@ NetIODev:
          TDESTMux:
            TDEST: 4
      hlsStream:
+       <<: *strm
        at:
          SRP:
            protocolVersion: SRP_UDP_NONE
