@@ -100,8 +100,7 @@ NetIODev:
          UDP:
            port: 8194
          RSSI: yes
-         depack:
-           useDepack: yes
+         depack: yes
          TDESTMux:
            TDEST: 4
      hlsStream:
@@ -112,8 +111,7 @@ NetIODev:
          UDP:
            port: 8193
          RSSI: yes
-         depack:
-           useDepack: yes
+         depack: yes
          TDESTMux:
            TDEST: 0xC0
            stripHeader: yes
