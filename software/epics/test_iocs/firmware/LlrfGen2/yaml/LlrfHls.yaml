@@ -1,0 +1,345 @@
+##############################################################################
+## This file is part of 'SLAC Firmware Standard Library'.
+## It is subject to the license terms in the LICENSE.txt file found in the
+## top-level directory of this distribution and at:
+##    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+## No part of 'SLAC Firmware Standard Library', including this file,
+## may be copied, modified, propagated, or distributed except according to
+## the terms contained in the LICENSE.txt file.
+##############################################################################
+#schemaversion 3.0.0
+#once LlrfHls.yaml
+
+LlrfHls: &LlrfHls
+  description: LLRF HLS module
+  class: MMIODev
+  configPrio: 1
+  size: 0x4000
+  ############
+  children:
+  ############
+    P_REF_OFFSET:
+      class: IntField
+      at:
+        offset: 0x100
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "P_REF_OFFSET"
+#################################
+    P_FB_OFFSET:
+      class: IntField
+      at:
+        offset: 0x108
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "P_FB_OFFSET"
+#################################
+    P_GAIN:
+      class: IntField
+      at:
+        offset: 0x110
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "P_GAIN"
+#################################
+    A_GAIN:
+      class: IntField
+      at:
+        offset: 0x118
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "A_GAIN"
+#################################
+    REF_SUBTRACTION_ENABLE:
+      class: IntField
+      at:
+        offset: 0x120
+      sizeBits: 1
+      mode: RW
+      description: "REF_SUBTRACTION_ENABLE"
+#################################
+    FB_PHASE_ENABLE:
+      class: IntField
+      at:
+        offset: 0x128
+      sizeBits: 1
+      mode: RW
+      description: "FB_PHASE_ENABLE"
+#################################
+    FB_AMPL_ENABLE:
+      class: IntField
+      at:
+        offset: 0x130
+      sizeBits: 1
+      mode: RW
+      description: "FB_AMPL_ENABLE"
+#################################
+    P_CORR_UPPER:
+      class: IntField
+      at:
+        offset: 0x280
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "P_CORR_UPPER"
+#################################
+    P_CORR_LOWER:
+      class: IntField
+      at:
+        offset: 0x288
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "P_CORR_LOWER"
+#################################
+    A_CORR_UPPER:
+      class: IntField
+      at:
+        offset: 0x290
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "A_CORR_UPPER"
+#################################
+    A_CORR_LOWER:
+      class: IntField
+      at:
+        offset: 0x298
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "A_CORR_LOWER"
+#################################
+    A_THRESHOLD:
+      class: IntField
+      at:
+        offset: 0x2a0
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "A_THRESHOLD"
+#################################
+    A_DRV_UPPER:
+      class: IntField
+      at:
+        offset: 0x2a8
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "A_DRV_UPPER"
+#################################
+    A_DRV_LOWER:
+      class: IntField
+      at:
+        offset: 0x2b0
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "A_DRV_LOWER"
+#################################
+    MODE_CONFIG_V:
+      class: IntField
+      at:
+        offset: 0x2b8
+      sizeBits: 2
+      mode: RW
+      description: "MODE_CONFIG_V"
+#################################
+    STREAM_ENABLE:
+      class: IntField
+      at:
+        offset: 0x2c0
+      sizeBits: 1
+      mode: RW
+      description: "STREAM_ENABLE"
+#################################
+    REF_WEIGHT_IN:
+      class: IntField
+      at:
+        offset: 0x040
+        nelms: 10
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "REF_WEIGHT_IN"
+#################################
+    FB_WEIGHT_IN:
+      class: IntField
+      at:
+        offset: 0x080
+        nelms: 10
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "FB_WEIGHT_IN"
+#################################
+    P_OFFSET:
+      class: IntField
+      at:
+        offset: 0x0c0
+        nelms: 10
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "P_OFFSET"
+#################################
+    P_DES:
+      class: IntField
+      at:
+        offset: 0x180
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "P_DES"
+#################################
+    A_DES:
+      class: IntField
+      at:
+        offset: 0x200
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RW
+      description: "A_DES"
+#################################
+    VERSION_V:
+      class: IntField
+      at:
+        offset: 0x700
+      sizeBits: 16
+      mode: RO
+      description: "VERSION_V"
+#################################
+    NUM_TIMESLOT_V:
+      class: IntField
+      at:
+        offset: 0x708
+      sizeBits: 16
+      mode: RO
+      description: "NUM_TIMESLOT_V"
+#################################
+    NUM_CHANNELS_V:
+      class: IntField
+      at:
+        offset: 0x710
+      sizeBits: 16
+      mode: RO
+      description: "NUM_CHANNELS_V"
+#################################
+    NUM_WINDOW_V:
+      class: IntField
+      at:
+        offset: 0x718
+      sizeBits: 16
+      mode: RO
+      description: "NUM_WINDOW_V"
+#################################
+    MAX_PULSE_LEN_V:
+      class: IntField
+      at:
+        offset: 0x720
+      sizeBits: 16
+      mode: RO
+      description: "MAX_PULSE_LEN_V"
+#################################
+    COUNTER_V:
+      class: IntField
+      at:
+        offset: 0x728
+      sizeBits: 32
+      mode: RO
+      description: "COUNTER_V"
+#################################
+    DROP_COUNTER_V:
+      class: IntField
+      at:
+        offset: 0x730
+      sizeBits: 32
+      mode: RO
+      description: "DROP_COUNTER_V"
+#################################
+    P_CH:
+      class: IntField
+      at:
+        offset: 0x300
+        nelms: 30
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "P_CH"
+#################################
+    A_CH:
+      class: IntField
+      at:
+        offset: 0x380
+        nelms: 30
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "A_CH"
+#################################
+    P_FB:
+      class: IntField
+      at:
+        offset: 0x400
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "P_FB"
+#################################
+    A_FB:
+      class: IntField
+      at:
+        offset: 0x480
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "A_FB"
+#################################
+    P_REF:
+      class: IntField
+      at:
+        offset: 0x500
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "P_REF"
+#################################
+    A_REF:
+      class: IntField
+      at:
+        offset: 0x580
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "A_REF"
+#################################
+    P_SET:
+      class: IntField
+      at:
+        offset: 0x600
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "P_SET"
+#################################
+    A_SET:
+      class: IntField
+      at:
+        offset: 0x680
+        nelms: 18
+      encoding: IEEE_754
+      sizeBits: 32
+      mode: RO
+      description: "A_SET"
+#################################
