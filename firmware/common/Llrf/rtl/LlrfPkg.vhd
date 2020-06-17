@@ -1,28 +1,24 @@
 -------------------------------------------------------------------------------
 -- Title      : LlrfPkg
 -------------------------------------------------------------------------------
--- File       : LlrfPkg.vhd
--- Author     : Matt Weaver <weaver@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2015-09-01
--- Last update: 2020-05-19
--- Platform   : 
--- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: 
+-- Description:
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 Timing Core'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 Timing Core', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 Timing Core', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 
-use work.StdRtlPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
 
 package LlrfPkg is
 
@@ -43,7 +39,7 @@ package LlrfPkg is
     q0     => (others=>(others=>'0')),
     i1     => (others=>(others=>'0')),
     q1     => (others=>(others=>'0')) );
-  
+
   type Iq36Type is record
     i0     : Slv36Array(5 downto 0);
     q0     : Slv36Array(5 downto 0);
@@ -73,7 +69,7 @@ package LlrfPkg is
     channel => (others=>'0'),
     sync    => '0',
     tlast   => '1' );
-    
+
   type LsDacType is record
     data    : Slv16Array(2 downto 0);
     valid   : sl;
@@ -90,14 +86,14 @@ package LlrfPkg is
   end record;
 
   type DdcFrameArray is array (natural range <>) of DdcFrameType;
-    
+
   constant DDC_FRAME_INIT_C : DdcFrameType := (
     data  => (others=>'0'),
     valid => '0',
-    sync  => '0' ); 
-  
+    sync  => '0' );
+
 end package LlrfPkg;
-  
+
 package body LlrfPkg is
 end package body LlrfPkg;
 

@@ -1,22 +1,16 @@
 -------------------------------------------------------------------------------
 -- Title      : Synchronize timing trigger to 185 clock with the information about 370MHz clock position
 -------------------------------------------------------------------------------
--- File       : TimingTrigSync.vhd
--- Author     : Uros Legat <ulegat@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2013-04-30
--- Last update: 2016-09-30
--- Platform   : 
--- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: 
+-- Description:
 -------------------------------------------------------------------------------
 -- This file is part of 'SLAC Firmware Standard Library'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'SLAC Firmware Standard Library', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'SLAC Firmware Standard Library', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
 
@@ -25,11 +19,12 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.std_logic_arith.all;
 
-use work.StdRtlPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
 
 entity TimingTrigSync is
    generic (
-      TPD_G : time := 1 ns); 
+      TPD_G : time := 1 ns);
    port (
       clk       : in  sl;
       rst       : in  sl := '0';
@@ -56,10 +51,10 @@ architecture rtl of TimingTrigSync is
    signal rin : RegType;
 
    signal s_trig2x : sl;
-   
+
 begin
 
-   U_Sync : entity work.SynchronizerOneShot
+   U_Sync : entity surf.SynchronizerOneShot
       generic map (
          TPD_G => TPD_G)
       port map (
@@ -78,7 +73,7 @@ begin
       -- Clk:     __--__--__--
       -- s_trig2x:__--________
       -- or
-      -- s_trig2x:____--______      
+      -- s_trig2x:____--______
       if (s_trig2x = '1') then
          v.pos := clk;
       end if;
@@ -91,7 +86,7 @@ begin
       end if;
 
       rin <= v;
-      
+
    end process comb;
 
    seq : process (clk2x) is
@@ -101,7 +96,7 @@ begin
       end if;
    end process seq;
 
-   U_SyncFifo : entity work.SynchronizerFifo
+   U_SyncFifo : entity surf.SynchronizerFifo
       generic map (
          TPD_G        => TPD_G,
          DATA_WIDTH_G => 1)
@@ -113,6 +108,6 @@ begin
          -- Read Ports (rd_clk domain)
          rd_clk  => clk,
          valid   => trig_o,
-         dout(0) => trigPos_o);     
+         dout(0) => trigPos_o);
 
 end architecture rtl;

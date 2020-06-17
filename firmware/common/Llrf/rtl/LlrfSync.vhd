@@ -1,20 +1,14 @@
 -------------------------------------------------------------------------------
 -- Title      : LlrfSync
 -------------------------------------------------------------------------------
--- File       : LlrfSync.vhd
--- Author     : Matt Weaver <weaver@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2016-02-25
--- Last update: 2020-04-30
--- Platform   : 
--- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 LLRF Development'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 LLRF Development', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 LLRF Development', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
 
@@ -22,8 +16,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
-use work.StdRtlPkg.all;
-use work.Jesd204bPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
+use surf.Jesd204bPkg.all;
 
 entity LlrfSync is
   generic (
@@ -47,12 +42,12 @@ end LlrfSync;
 architecture rtl of LlrfSync is
 
 begin
-  
+
    SYNC_ADC :
    for i in 5 downto 0 generate
      SYNC_ADC_BAY : for j in 1 downto 0 generate
        -- Synchronize to Bay1 clk2x
-       U_Jesd32bTo16b: entity work.Jesd32bTo16b
+       U_Jesd32bTo16b: entity surf.Jesd32bTo16b
          generic map (
            TPD_G => TPD_G)
          port map (
@@ -66,8 +61,8 @@ begin
            dataOut  => adcOut(j, i));
      end generate SYNC_ADC_BAY;
    end generate SYNC_ADC;
-         
-   U_SYNC_DAC : entity work.Jesd16bTo32b
+
+   U_SYNC_DAC : entity surf.Jesd16bTo32b
       generic map (
          TPD_G => TPD_G)
       port map (

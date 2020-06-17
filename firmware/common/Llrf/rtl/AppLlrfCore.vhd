@@ -1,14 +1,9 @@
 -------------------------------------------------------------------------------
 -- Title      : System Generator core wrapper
 -------------------------------------------------------------------------------
--- File       : AppLlrfCore.vhd
--- Author     : Larry Ruckman  <ruckman@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2016-02-25
--- Last update: 2020-05-25
--- Platform   : 
--- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
+-- Description:
 --   JesdClkx2 is 351   MHz  ( 378 * beam rate )
 --   JesdClk   is 175.5 MHz
 --   12/21     is 200.6 MHz  ( 216 * beam rate )
@@ -16,11 +11,11 @@
 --   IF        is  171  MHz
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 LLRF Development'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 LLRF Development', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 LLRF Development', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
 
@@ -28,16 +23,21 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
-use work.StdRtlPkg.all;
-use work.AxiLitePkg.all;
-use work.AxiStreamPkg.all;
-use work.Jesd204bPkg.all;
-use work.AmcCarrierPkg.all;
-use work.AppTopPkg.all;
-use work.EthMacPkg.all;
-use work.SsiPkg.all;
-use work.LlrfPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
+use surf.AxiLitePkg.all;
+use surf.AxiStreamPkg.all;
+use surf.Jesd204bPkg.all;
+use surf.EthMacPkg.all;
+use surf.SsiPkg.all;
 
+library amc_carrier_core;
+use amc_carrier_core.AmcCarrierPkg.all;
+use amc_carrier_core.AppTopPkg.all;
+
+library llrf_core;
+
+use work.LlrfPkg.all;
 
 entity AppLlrfCore is
    generic (
@@ -46,13 +46,13 @@ entity AppLlrfCore is
       NUM_OF_TRIG_PULSES_G : positive := 8
    );
    port (
-      -- 
+      --
       jesdClk        : in  slv(1 downto 0);
       jesdRst        : in  slv(1 downto 0);
-      
+
       jesdClk2x      : in  slv(1 downto 0);
       jesdRst2x      : in  slv(1 downto 0);
-      
+
       -- Timing pulse trigger
       -- Note: Asynchronous
       timingClk      : in  sl;
@@ -62,7 +62,7 @@ entity AppLlrfCore is
       dmod           : in  slv(191 downto 0);
       bsa            : in  slv(127 downto 0);
       trigDaqOut     : out slv(1 downto 0);
-      
+
       -- JESD ADC
       adcHs          : in  sampleDataVectorArray(1 downto 0, 5 downto 0);
       adcHsValid     : in  Slv6Array(1 downto 0):=(others => (others =>'0'));
@@ -93,7 +93,7 @@ entity AppLlrfCore is
       dacSigStatus        : in    DacSigStatusArray(1 downto 0);
       dacSigValids        : in    Slv7Array(1 downto 0);
       dacSigValues        : in    sampleDataVectorArray(1 downto 0, 6 downto 0);
-            
+
       -- AXI-Lite Port
       axiClk         : in  sl;
       axiRst         : in  sl;
@@ -110,21 +110,21 @@ entity AppLlrfCore is
 end AppLlrfCore;
 
 architecture mapping of AppLlrfCore is
-   
+
    signal dspClk204 : sl := '0';
    signal dspRst204 : sl := '0';
    signal dspRstN   : sl; -- async
 
    signal jesdRstL    : sl;
    signal axiRstL     : sl;
-   
+
    signal adc357      : Slv16VectorArray(1 downto 0, 5 downto 0);
    signal adcValid357 : SlVectorArray   (1 downto 0, 5 downto 0);
    signal adcValid204 : Slv6Array (1 downto 0);
 
    signal iout357  : slv(17 downto 0) := (others=>'0');
    signal qout357  : slv(17 downto 0) := (others=>'0');
-   
+
    signal dacHs357       : slv(15 downto 0) := (others => '0');
    signal dacHsValid357  : sl := '0';
 
@@ -141,7 +141,7 @@ architecture mapping of AppLlrfCore is
 
    signal userDacControl    : slv(15 downto 0) := (others=>'0');
    signal userdaccontrol204 : slv(15 downto 0) := (others=>'0');
-   
+
    --
    --  AxiLiteCrossbar
    --
@@ -151,7 +151,7 @@ architecture mapping of AppLlrfCore is
    constant MODEL_INDEX_C     : natural := 3;
    constant STREAM_INDEX_C    : natural := 4;
    constant NUM_MASTERS_C     : natural := 5;
-   
+
    constant AXI_XBAR_CONFIG_C : AxiLiteCrossbarMasterConfigArray(NUM_MASTERS_C-1 downto 0) := genAxiLiteConfig( NUM_MASTERS_C, AXI_BASE_ADDR_G, 24, 20);
 
    signal readMaster  : AxiLiteReadMasterArray (AXI_XBAR_CONFIG_C'range);
@@ -188,7 +188,7 @@ architecture mapping of AppLlrfCore is
 
    signal timeslotIn  : slv(4 downto 0)   := (others => '0');
    signal timestampIn : slv(191 downto 0) := (others => '0');
-   
+
    constant DEBUG_C : boolean := false;
 
    component ila_0
@@ -203,13 +203,13 @@ begin
        port map ( clk                    => jesdClk(1),
                   probe0(255 downto   0) => (others=>'0') );
    end generate;
-   
+
    axiRstL <= not axiRst;
-   
+
    ---------------------
    -- AXI-Lite Crossbar
    ---------------------
-   U_XBAR : entity work.AxiLiteCrossbar
+   U_XBAR : entity surf.AxiLiteCrossbar
      generic map (
        TPD_G              => TPD_G,
        NUM_SLAVE_SLOTS_G  => 1,
@@ -225,9 +225,9 @@ begin
        mAxiWriteMasters    => writeMaster,
        mAxiWriteSlaves     => writeSlave,
        mAxiReadMasters     => readMaster,
-       mAxiReadSlaves      => readSlave);      
+       mAxiReadSlaves      => readSlave);
 
-   U_DSP_CLK : entity work.ClockManagerUltraScale
+   U_DSP_CLK : entity surf.ClockManagerUltraScale
      generic map (
        BANDWIDTH_G        => "HIGH",
        CLKIN_PERIOD_G     => 2.801,
@@ -245,7 +245,7 @@ begin
    ----------------------
    -- SYNC Timing pulse
    ----------------------
-   U_TimingTrigSync: entity work.SynchronizerOneShot
+   U_TimingTrigSync: entity surf.SynchronizerOneShot
      generic map (
        TPD_G         => TPD_G,
        PULSE_WIDTH_G => 1 )
@@ -254,7 +254,7 @@ begin
        rst       => jesdRst2x(1),
        dataIn    => trigPulse,
        dataOut   => trigPulseSync);
-      
+
    ---------------------------
    -- SYNC Inputs to Bay1 clk
    ---------------------------
@@ -282,7 +282,7 @@ begin
        rd_ddc => af204 );
 
    SYNC_DAC_LS : for i in 2 downto 0 generate
-      SYNC_DAC : entity work.SynchronizerFifo
+      SYNC_DAC : entity surf.SynchronizerFifo
          generic map (
             TPD_G        => TPD_G,
             DATA_WIDTH_G => 16)
@@ -300,7 +300,7 @@ begin
       dacLs(i)      <= dacLs185.data(i) & dacLs185.data(i);
       dacLsValid(i) <= '1';
    end generate SYNC_DAC_LS;
-   
+
    -----------
    -- DSP Core
    -----------
@@ -338,25 +338,25 @@ begin
        phaseamptlast(0)      => af357.tLast,
        phaseampvalid(0)      => af357.valid,
        -- Full rate demod data
-       i0_0                  => iDemodHs(0), 
+       i0_0                  => iDemodHs(0),
        q0_0                  => qDemodHs(0),
-       i0_1                  => iDemodHs(1), 
+       i0_1                  => iDemodHs(1),
        q0_1                  => qDemodHs(1),
-       i0_2                  => iDemodHs(2), 
+       i0_2                  => iDemodHs(2),
        q0_2                  => qDemodHs(2),
-       i0_3                  => iDemodHs(3), 
+       i0_3                  => iDemodHs(3),
        q0_3                  => qDemodHs(3),
-       i0_4                  => iDemodHs(4), 
+       i0_4                  => iDemodHs(4),
        q0_4                  => qDemodHs(4),
-       i0_5                  => iDemodHs(5), 
+       i0_5                  => iDemodHs(5),
        q0_5                  => qDemodHs(5),
-       i1_0                  => iDemodHs(6), 
+       i1_0                  => iDemodHs(6),
        q1_0                  => qDemodHs(6),
-       i1_1                  => iDemodHs(7), 
+       i1_1                  => iDemodHs(7),
        q1_1                  => qDemodHs(7),
-       i1_2                  => iDemodHs(8), 
+       i1_2                  => iDemodHs(8),
        q1_2                  => qDemodHs(8),
-       i1_3                  => iDemodHs(9), 
+       i1_3                  => iDemodHs(9),
        q1_3                  => qDemodHs(9),
        -- AXI-Lite Interface
        axi_lite_clk           => axiClk,
@@ -446,14 +446,14 @@ begin
          axi_lite_s_axi_rvalid  => readSlave  (UPCONVERT_INDEX_C).rvalid );
 
 
-   iSigGen      <= dacSigValues(1, 0); 
-   qSigGen      <= dacSigValues(1, 1); 
+   iSigGen      <= dacSigValues(1, 0);
+   qSigGen      <= dacSigValues(1, 1);
    dacSigCtrl(0).start <= (others => '0');
    dacSigCtrl(1).start <= (others => trigPulseSync);
 
    timeslotIn(2 downto 0) <= timeslot;
 
-   U_MODEL : entity work.LlrfFeedbackWrapper
+   U_MODEL : entity llrf_core.LlrfFeedbackWrapper
      generic map (
        TPD_G                => TPD_G,
        AXI_BASE_ADDR_G      => AXI_XBAR_CONFIG_C(MODEL_INDEX_C).baseAddr)
@@ -489,7 +489,7 @@ begin
      debug204(i).valid <= debug204_valid(i);
      debug204(i).data  <= debug204_data(32*i+31 downto 32*i);
      debug204(i).sync  <= debug204_sync;
-     U_SYNC_DEBUG : entity work.SynchronizerFifo
+     U_SYNC_DEBUG : entity surf.SynchronizerFifo
        generic map (
          TPD_G             => TPD_G,
          ADDR_WIDTH_G      => 10,
@@ -515,9 +515,9 @@ begin
    end generate;
    trigDaqOut (0)      <= debug185(0).sync;
    trigDaqOut (1)      <= debug185(4).sync;
-   
--- TODO tie to dsp core 
+
+-- TODO tie to dsp core
    rfSwitch <= '1';
-     
+
 end mapping;
 

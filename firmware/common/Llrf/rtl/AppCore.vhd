@@ -1,8 +1,5 @@
 -------------------------------------------------------------------------------
--- File       : AppCore.vhd
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2017-02-04
--- Last update: 2020-05-19
 -------------------------------------------------------------------------------
 -- Description: Application Core's Top Level
 --
@@ -23,17 +20,22 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.std_logic_arith.all;
 
-use work.StdRtlPkg.all;
-use work.AxiStreamPkg.all;
-use work.AxiLitePkg.all;
-use work.TimingPkg.all;
-use work.AmcCarrierPkg.all;
-use work.jesd204bpkg.all;
-use work.AppTopPkg.all;
---use work.AppCorePkg.all;
---use work.AppCoreTimingPkg.all;
-use work.EthMacPkg.all;
-use work.AppOpts.all;
+library surf;
+use surf.StdRtlPkg.all;
+use surf.AxiStreamPkg.all;
+use surf.AxiLitePkg.all;
+use surf.jesd204bpkg.all;
+use surf.EthMacPkg.all;
+
+library amc_carrier_core;
+use amc_carrier_core.AmcCarrierPkg.all;
+use amc_carrier_core.AppTopPkg.all;
+
+library lcls_timing_core;
+use lcls_timing_core.TimingPkg.all;
+
+library xil_defaultlib;
+use xil_defaultlib.AppOpts.all;
 
 library unisim;
 use unisim.vcomponents.all;
@@ -62,7 +64,7 @@ entity AppCore is
       -- JESD SYNC Interface (jesdClk[1:0] domain)
       jesdSysRef          : out   slv(1 downto 0);
       jesdRxSync          : in    slv(1 downto 0);
-      jesdTxSync          : out   slv(1 downto 0);
+      jesdTxSync          : out   Slv7Array(1 downto 0) := (others=>(others=>'0'));
       -- ADC/DAC/Debug Interface (jesdClk[1:0] domain)
       adcValids           : in    Slv7Array(1 downto 0);
       adcValues           : in    sampleDataVectorArray(1 downto 0, 6 downto 0);
@@ -207,10 +209,10 @@ architecture mapping of AppCore is
 
    signal s_debugValids         :   Slv4Array(1 downto 0);
    signal s_debugValues         :   sampleDataVectorArray(1 downto 0, 3 downto 0);
-   
+
    signal s_procValids         :   Slv4Array(1 downto 0) := (others=>(others=>'0'));
    signal s_procValues         :   sampleDataVectorArray(1 downto 0, 3 downto 0);
-   
+
    constant  IODELAY_GROUP_C                        : string := "APP_DELAY_GROUP";
    attribute IODELAY_GROUP                          : string;
    attribute IODELAY_GROUP of U_IDELAYCTRL : label is IODELAY_GROUP_C;
@@ -226,14 +228,14 @@ architecture mapping of AppCore is
 
    signal streamMaster         : AxiStreamMasterType;
    signal streamSlave          : AxiStreamSlaveType;
-   
+
    constant DEBUG_C : boolean := true;
 
    component ila_0
      port ( clk    : in sl;
             probe0 : in slv(255 downto 0) );
    end component;
-   
+
 begin
 
    GEN_DEBUG : if DEBUG_C generate
@@ -246,7 +248,7 @@ begin
                   probe0( 27 downto 20) => s_trigPulse,
                   probe0(255 downto 28) => (others=>'0') );
    end generate;
-   
+
     -- We want to see DAC values on DaqMux
    dacValids <= (others => (others => '1'));
    dacValues(0,0) <= s_dacLs(0);
@@ -276,7 +278,7 @@ begin
    ---------------------
    -- AXI-Lite Crossbar
    ---------------------
-   U_XBAR : entity work.AxiLiteCrossbar
+   U_XBAR : entity surf.AxiLiteCrossbar
       generic map (
          TPD_G              => TPD_G,
          NUM_SLAVE_SLOTS_G  => 1,
@@ -298,7 +300,7 @@ begin
    -- LCLS ACCEL/STBY Trigger MUX
    --------------------
    GEN_TRIG_MUX : for i in (TRIG_SIZE_C/2)-1 downto 0 generate
-      U_TimingTrigMux: entity work.TimingTrigMux
+      U_TimingTrigMux: entity xil_defaultlib.TimingTrigMux
       generic map (
          TPD_G => TPD_G)
       port map (
@@ -319,7 +321,7 @@ begin
    GEN_WAVEFORMS : for i in 1 downto 0 generate
       -- Dual port RAM accessible from axiLite
       -- waveform input to the System Generator
-      U_Waveform : entity work.AxiDualPortRam
+      U_Waveform : entity surf.AxiDualPortRam
          generic map (
             TPD_G        => TPD_G,
             --BRAM_EN_G    => true,
@@ -348,7 +350,7 @@ begin
    ----------------
    -- SYSGEN Module
    ----------------
-   U_SysGen : entity work.AppLlrfCore
+   U_SysGen : entity xil_defaultlib.AppLlrfCore
       generic map (
          TPD_G                => TPD_G,
          AXI_BASE_ADDR_G      => AXI_CONFIG_C(SYSGEN_INDEX_C).baseAddr,
@@ -400,7 +402,7 @@ begin
          streamSlave    => obAppDebugSlave );
 
    GEN_LCLS_I : if APP_TIMING_MODE_C = 1 generate
-     V2FV1 : entity work.EvrV2FromV1
+     V2FV1 : entity lcls_timing_core.EvrV2FromV1
        port map ( clk       => timingClk,
                   disable   => '0',
                   timingIn  => timingBus,
@@ -410,11 +412,11 @@ begin
      axilReadSlaves (BLD_INDEX_C) <= AXI_LITE_READ_SLAVE_INIT_C;
      axilWriteSlaves(BLD_INDEX_C) <= AXI_LITE_WRITE_SLAVE_INIT_C;
    end generate;
-     
+
    GEN_LCLS_II : if APP_TIMING_MODE_C = 2 generate
      timingMessage <= timingBus.message;
 
-     U_BLD : entity work.BldWrapper
+     U_BLD : entity xil_defaultlib.BldWrapper
        generic map ( NUM_EDEFS_G => 2 )
        port map (
          -- Diagnostic data interface
@@ -437,8 +439,8 @@ begin
    end generate;
 
    timingMessageSlv <= toSlv(timingMessage);
-   
-   V2FIFO : entity work.FifoAsync
+
+   V2FIFO : entity surf.FifoAsync
      generic map ( FWFT_EN_G     => true,
                    DATA_WIDTH_G  => TIMING_MESSAGE_BITS_C,
                    ADDR_WIDTH_G  => 4 )
@@ -454,7 +456,7 @@ begin
 
    diagnBus.timingMessage <= toTimingMessageType(timingMessageSlvO);
 
-   BSSS : entity work.BsssWrapper
+   BSSS : entity xil_defaultlib.BsssWrapper
      generic map ( NUM_EDEFS_G => 8 )
      port map (
        -- Diagnostic data interface
@@ -477,10 +479,10 @@ begin
    diagnosticClk <= diagnClk;
    diagnosticRst <= diagnRst;
    diagnosticBus <= diagnBus;
-   
+
    -- Clock trigger divider - LCLS I  recovered timing clock*(3/21)
    -- Clock trigger divider - LCLS II recovered timing clock*(9/100)
-   U_ClockManager : entity work.ClockManagerUltraScale
+   U_ClockManager : entity surf.ClockManagerUltraScale
      generic map (
        TPD_G              => 1 ns,
        TYPE_G             => "MMCM",
@@ -512,11 +514,11 @@ begin
 
    axilReadSlaves  (MMCM_DRP_INDEX_C) <= AXI_LITE_READ_SLAVE_INIT_C;
    axilWriteSlaves (MMCM_DRP_INDEX_C) <= AXI_LITE_WRITE_SLAVE_INIT_C;
-   
+
    -----------------------
    -- AMC BAY[0] Interface
    -----------------------
-   U_AMC0 : entity work.AmcMrLlrfDownConvertCore
+   U_AMC0 : entity amc_carrier_core.AmcMrLlrfDownConvertCore
       generic map (
          TPD_G            => TPD_G,
          AXI_BASE_ADDR_G  => AXI_CONFIG_C(AMC0_INDEX_C).baseAddr)
@@ -562,7 +564,7 @@ begin
    -- AMC BAY[1] Interface
    -----------------------
    U_UPCONVERT_V1 : if (UPCONVERT_V2_C = false) generate
-      U_AMC1 : entity work.AmcMrLlrfUpConvertCore
+      U_AMC1 : entity amc_carrier_core.AmcMrLlrfUpConvertCore
          generic map (
             TPD_G              => TPD_G,
             IODELAY_GROUP_G    => IODELAY_GROUP_C,
@@ -613,7 +615,7 @@ begin
    end generate;
 
    U_UPCONVERT_V2 : if (UPCONVERT_V2_C = true) generate
-      U_AMC1 : entity work.AmcMrLlrfGen2UpConvert
+      U_AMC1 : entity amc_carrier_core.AmcMrLlrfGen2UpConvert
          generic map (
             TPD_G              => TPD_G,
             IODELAY_GROUP_G    => IODELAY_GROUP_C,
@@ -627,7 +629,10 @@ begin
             jesdRst2x       => jesdRst2x(1),
             jesdSysRef      => jesdSysRef(1),
             jesdRxSync      => jesdRxSync(1),
-	    jesdTxSync      => jesdTxSync(1),
+
+            jesdTxSync(6 downto 0) => jesdTxSync(1),
+            jesdTxSync(9 downto 7) => open,
+
             -- DAC Interface (jesdClk domain)
             recClk          => timingClk,
             recRst          => timingRst,
@@ -666,7 +671,7 @@ begin
 --   ----------------
 --   -- RTM Interface
 --   ----------------
-   U_RTM : entity work.RtmRfInterlock
+   U_RTM : entity amc_carrier_core.RtmRfInterlock
       generic map (
          TPD_G            => TPD_G,
          IODELAY_GROUP_G  => IODELAY_GROUP_C,
@@ -709,7 +714,7 @@ begin
 
    debugValues <= s_debugValues;
    debugValids <= s_debugValids;
-   
+
    --------------------------
    -- Terminate usued outputs
    --------------------------

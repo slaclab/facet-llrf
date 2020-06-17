@@ -1,5 +1,4 @@
-export GIT_BYPASS = 1
-
+export USE_XVC_DEBUG = 1
 ##########################################################################################
 # Applications must define the 32-bitFirmware Version Number
 ##########################################################################################
@@ -25,7 +24,6 @@ export PRJ_VERSION = 0x00000005
 ##########################################################################################
 # AMC_ADV_BUILD is defined by application
 export AMC_ADV_BUILD = 1
-export USE_XVC_DEBUG = 1
 
 ##########################################################################################
 # Applications must define if using zone3 (RTM) ETH (instead of zone2 ETH)
@@ -76,7 +74,7 @@ export COMMON_FILE = Llrf
 #     If REMOVE_UNUSED_CODE = 0, all source code is kept after importing to Vivado project
 #     If REMOVE_UNUSED_CODE = 1, all unused source code is removed from Vivado project
 ##########################################################################################
-export REMOVE_UNUSED_CODE = 1
+export REMOVE_UNUSED_CODE = 0
 
 ##########################################################################################
 ############################  DO NOT EDIT THE CODE BELOW  ################################

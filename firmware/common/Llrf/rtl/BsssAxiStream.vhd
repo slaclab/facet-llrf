@@ -1,38 +1,37 @@
 -----------------------------------------------------------------------------
--- Title      : 
--------------------------------------------------------------------------------
--- File       : BsssAxiStream.vhd
--- Author     : Matt Weaver <weaver@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2015-09-25
--- Last update: 2019-10-19
--- Platform   : 
--- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: 
+-- Description:
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 Timing Core'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 Timing Core', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 Timing Core', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.std_logic_arith.all;
 
-use work.StdRtlPkg.all;
-use work.AxiLitePkg.all;
-use work.AxiStreamPkg.all;
-use work.EthMacPkg.all;
-use work.SsiPkg.all;
-use work.TimingPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
+use surf.AxiLitePkg.all;
+use surf.AxiStreamPkg.all;
+use surf.EthMacPkg.all;
+use surf.SsiPkg.all;
+
+library lcls_timing_core;
+use lcls_timing_core.TimingPkg.all;
+use lcls_timing_core.EvrV2Pkg.all;
+
+library amc_carrier_core;
+use amc_carrier_core.AmcCarrierPkg.all;
+
 use work.BsssPkg.all;
-use work.EvrV2Pkg.all;
-use work.AmcCarrierPkg.all;
 
 entity BsssAxiStream is
 
@@ -82,7 +81,7 @@ architecture rtl of BsssAxiStream is
     edefConfig  => (others=>EDEF_CONFIG_INIT_C) );
 
   constant BLD_CONFIG_BITS_C : integer := BSA_DIAGNOSTIC_OUTPUTS_C + 77 + NUM_EDEFS_G*EDEF_CONFIG_BITS_C;
-  
+
   function toSlv(r : BldConfigType) return slv is
     variable v : slv(BLD_CONFIG_BITS_C-1 downto 0) := (others=>'0');
     variable i,j : integer := 0;
@@ -143,9 +142,9 @@ architecture rtl of BsssAxiStream is
     pause       => '1',
     packets     => (others=>'0'),
     depth       => (others=>'0') );
-  
+
   constant BLD_STATUS_BITS_C : integer := 125;
-  
+
   function toSlv(r : BldStatusType) return slv is
     variable v : slv(BLD_STATUS_BITS_C-1 downto 0) := (others=>'0');
     variable i : integer := 0;
@@ -189,7 +188,7 @@ architecture rtl of BsssAxiStream is
     assignRecord(i, v, c.depth);
     return c;
   end function;
-  
+
   type AxilRegType is record
     config      : BldConfigType;
     axilWriteS  : AxiLiteWriteSlaveType;
@@ -200,7 +199,7 @@ architecture rtl of BsssAxiStream is
     config      => BLD_CONFIG_INIT_C,
     axilWriteS  => AXI_LITE_WRITE_SLAVE_INIT_C,
     axilReadS   => AXI_LITE_READ_SLAVE_INIT_C );
-    
+
   signal c     : AxilRegType := AXIL_REG_INIT_C;
   signal cin   : AxilRegType;
 
@@ -248,7 +247,7 @@ architecture rtl of BsssAxiStream is
     TID_BITS_C    => 0,
     TKEEP_MODE_C  => TKEEP_COMP_C,
     TUSER_BITS_C  => 4,
-    TUSER_MODE_C  => TUSER_FIRST_LAST_C);   
+    TUSER_MODE_C  => TUSER_FIRST_LAST_C);
 
   signal sAxisMasters : AxiStreamMasterArray(1 downto 0);
   signal sAxisSlaves  : AxiStreamSlaveArray(1 downto 0);
@@ -279,14 +278,14 @@ begin
                   probe0(            87) => intAxisCtrl.pause,
                   probe0(255 downto  88) => (others=>'0') );
    end generate;
-   
+
    axilReadSlave  <= cin.axilReadS;
    axilWriteSlave <= cin.axilWriteS;
 
    sAxisMasters(0) <= ibEthMsgMaster;
    ibEthMsgSlave   <= sAxisSlaves(0);
 
-   U_FIFO : entity work.AxiStreamFifoV2
+   U_FIFO : entity surf.AxiStreamFifoV2
      generic map ( FIFO_ADDR_WIDTH_G   => 11,
                    FIFO_PAUSE_THRESH_G => 1900,
                    VALID_THOLD_G       => 0,   -- only when a full frame is ready
@@ -301,13 +300,13 @@ begin
                 mAxisRst     => axilRst,
                 mAxisMaster  => sAxisMasters(1),
                 mAxisSlave   => sAxisSlaves (1) );
-   
+
    reg_comb: process(c, axilRst, ssync, axilReadMaster, axilWriteMaster) is
      variable v   : AxilRegType;
      variable ep  : AxiLiteEndPointType;
    begin
      v := c;
-     
+
      -----------------------------
      -- Register access
      -----------------------------
@@ -334,7 +333,7 @@ begin
        axiSlaveRegister (ep, toSlv(68+i*8, 12),  0, v.config.edefConfig(i).tsUpdate);
        axiSlaveRegister (ep, toSlv(68+i*8, 12), 31, v.config.edefConfig(i).enable);
      end loop;
-       
+
      axiSlaveDefault (ep, v.axilWriteS, v.axilReadS);
 
      if axilRst = '1' then
@@ -353,17 +352,17 @@ begin
 
    cv    <= toSlv      (c.config);
    csync <= toBldConfig(csyncv);
-   
-   U_CSYNC : entity work.SynchronizerVector
+
+   U_CSYNC : entity surf.SynchronizerVector
      generic map ( WIDTH_G => BLD_CONFIG_BITS_C )
      port map ( clk     => diagnosticClk,
                 dataIn  => cv,
                 dataOut => csyncv );
-   
+
    sv    <= toSlv      (r.status);
    ssync <= toBldStatus(ssyncv);
-   
-   U_SSYNC : entity work.SynchronizerVector
+
+   U_SSYNC : entity surf.SynchronizerVector
      generic map ( WIDTH_G => BLD_STATUS_BITS_C )
      port map ( clk     => axilClk,
                 dataIn  => sv,
@@ -378,7 +377,7 @@ begin
                 dataIn    => r.timingMessage,
                 strobeOut => eventStrobe,
                 selectOut => eventSel );
-   
+
    comb: process(r, csync,
                  diagnosticRst, diagnosticBus, eventSel, eventStrobe,
                  intSlave, intAxisCtrl ) is
@@ -394,13 +393,13 @@ begin
      else
        eventSelQ := eventSel and r.svcReady;
      end if;
-     
+
      v := r;
 
      if diagnosticBus.strobe = '1' then
        v.timingMessage := diagnosticBus.timingMessage;
      end if;
-     
+
      v.strobe := r.strobe(r.strobe'left-1 downto 0) & diagnosticBus.strobe;
 
      --  Reset svcReady when appropriate ts bits change
@@ -412,7 +411,7 @@ begin
          end if;
        end loop;
      end if;
-     
+
      for i in 0 to BSA_DIAGNOSTIC_OUTPUTS_C-1 loop
        sevr(i) := csync.channelSevr(2*i+1 downto 2*i);
      end loop;
@@ -424,7 +423,7 @@ begin
      if v.master.tValid = '0' then
        ssiSetUserSof ( axiStreamConfig, v.master, '0' );
        ssiSetUserEofe( axiStreamConfig, v.master, '0' );
-     
+
        v.master.tValid := '1';
        v.master.tLast  := '0';
 
@@ -539,7 +538,7 @@ begin
        if ( csync.enable = '0' and v.status.state /= IDLE_S ) then
          v.status.state := INVALID_S;
        end if;
-       
+
 
      --  Output FIFO refused to acknowledge data
      elsif (v.status.state /= IDLE_S) then
@@ -560,7 +559,7 @@ begin
      end if;
    end process;
 
-   U_Mux : entity work.AxiStreamMux
+   U_Mux : entity surf.AxiStreamMux
      generic map ( NUM_SLAVES_G => 2 )
      port map ( axisClk      => axilClk,
                 axisRst      => axilRst,
@@ -568,5 +567,5 @@ begin
                 sAxisSlaves  => sAxisSlaves,
                 mAxisMaster  => obEthMsgMaster,
                 mAxisSlave   => obEthMsgSlave );
-   
+
 end rtl;
