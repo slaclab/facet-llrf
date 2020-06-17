@@ -25,7 +25,7 @@ def poll_and_read_pv(pv_name):
 
 if __name__ == "__main__":
     epics_prefix = 'LLRFGEN2'
-    defaults_file = '/afs/slac/g/controls/development/users/jvasquez/llrf_gen2/ioc/firmware/LlrfGen2/yaml-update/config/defaults.yaml'
+    defaults_file = '../../epics/test_iocs/firmware/LlrfGen2/yaml/config/defaults.yaml'
 
     print('Using EPICS prefix: "{}"...'.format(epics_prefix))
 
