@@ -69,7 +69,7 @@ export DEFAULT_TIMING = LCLS-I
 ##########################################################################################
 
 # COMMON_FILE is defined by application
-export COMMON_FILE = PhaseCavity
+export COMMON_FILE = Llrf
 
 ##########################################################################################
 # Application have the option to remove unused source code from Vivado project
