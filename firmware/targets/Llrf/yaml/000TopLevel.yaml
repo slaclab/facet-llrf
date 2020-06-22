@@ -68,6 +68,18 @@ strm: &strm
           at:
             offset: 0x00000000
 
+stream: &stream
+  SRP:
+    protocolVersion: SRP_UDP_NONE
+  UDP:
+    port: 8194
+    numRxThreads: 2
+  RSSI: yes
+  depack: yes
+  TDESTMux:
+    TDEST: 0x80
+    stripHeader: yes
+
 NetIODev:
   ipAddr: 10.0.1.105
   class: NetIODev
@@ -88,8 +100,7 @@ NetIODev:
          UDP:
            port: 8194
          RSSI: yes
-         depack:
-           useDepack: yes
+         depack: yes
          TDESTMux:
            TDEST: 4
      hlsStream:
@@ -100,8 +111,56 @@ NetIODev:
          UDP:
            port: 8193
          RSSI: yes
-         depack:
-           useDepack: yes
+         depack: yes
          TDESTMux:
            TDEST: 0xC0
            stripHeader: yes
+     Stream0:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x80
+     Stream1:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x81
+     Stream2:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x82
+     Stream3:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x83
+     Stream4:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x84
+     Stream5:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x85
+     Stream6:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x86
+     Stream7:
+       class: Field
+       at:
+         <<: *stream
+         TDESTMux:
+           TDEST: 0x87
+
