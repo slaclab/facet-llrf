@@ -1,20 +1,16 @@
 -------------------------------------------------------------------------------
 -- Title      : System Generator core wrapper test
 -------------------------------------------------------------------------------
--- File       : AppLlrfCoreTest.vhd
--- Author     : Matt Weaver <weaver@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2020-01-23
--- Last update: 2020-01-23
--- Platform   : 
--- Standard   : VHDL'93/02
+-------------------------------------------------------------------------------
+-- Description:
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 LLRF Development'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 LLRF Development', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 LLRF Development', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
 
@@ -22,19 +18,21 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
-use work.StdRtlPkg.all;
-use work.AxiLitePkg.all;
-use work.AxiStreamPkg.all;
-use work.Jesd204bPkg.all;
-use work.AmcCarrierPkg.all;
-use work.EthMacPkg.all;
-use work.SsiPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
+use surf.AxiLitePkg.all;
+use surf.AxiStreamPkg.all;
+use surf.Jesd204bPkg.all;
+use surf.EthMacPkg.all;
+use surf.SsiPkg.all;
+
+library amc_carrier_core;
+use amc_carrier_core.AmcCarrierPkg.all;
 
 entity AppTestModel is
    generic (
       TPD_G                : time     := 1 ns;
-      AXI_BASE_ADDR_G      : slv(31 downto 0);
-   );
+      AXI_BASE_ADDR_G      : slv(31 downto 0));
    port (
       --
       clk             : in  sl;
@@ -42,7 +40,7 @@ entity AppTestModel is
       sync            : in  sl;
       i0              : in  Slv18Array(5 downto 0);
       q0              : in  Slv18Array(5 downto 0);
-      -- Phase/Amp 
+      -- Phase/Amp
       amp             : in  slv(17 downto 0);
       phase           : in  slv(17 downto 0);
       phaseampchannel : in  slv( 3 downto 0);
@@ -58,7 +56,7 @@ entity AppTestModel is
       daqtrig         : out sl;
       debug           : out Slv32VectorArray(1 downto 0, 3 downto 0);
       debugvalid      : out Slv4Array(1 downto 0);
-      -- 
+      --
       seti            : out slv(17 downto 0);
       setq            : out slv(17 downto 0);
       userdaccontrol  : out slv(15 downto 0);
@@ -79,12 +77,12 @@ entity AppTestModel is
 end AppTestModel;
 
 architecture mapping of AppTestModel is
-   
+
    signal dstrobe           : sl;
    signal modelReg          : Slv32Array(0 downto 0);
    signal trigRateOut       : SlVectorArray(3 downto 0,31 downto 0);
    signal trigRateOutV      : Slv32Array(3 downto 0);
-   
+
    type RegType is record
      count    : slv       (23 downto 0);
      data     : Slv32Array(31 downto 0);
@@ -99,7 +97,7 @@ architecture mapping of AppTestModel is
 
 begin
 
-  U_TrigRate : entity work.SyncTrigRateVector
+  U_TrigRate : entity surf.SyncTrigRateVector
     generic map ( COMMON_CLK_G   => true,
                   ONE_SHOT_G     => true,
                   REF_CLK_FREQ_G => 156.25E+6,
@@ -116,8 +114,8 @@ begin
   trigRateOutV(1) <= muxSlVectorArray(trigRateOut, 1);
   trigRateOutV(2) <= muxSlVectorArray(trigRateOut, 2);
   trigRateOutV(3) <= muxSlVectorArray(trigRateOut, 3);
-  
-  U_AxiLiteRegs : entity work.AxiLiteRegs
+
+  U_AxiLiteRegs : entity surf.AxiLiteRegs
     generic map ( NUM_WRITE_REG_G => 1,
                   NUM_READ_REG_G  => 4 )
     port map ( axiClk         => axiClk,
@@ -138,15 +136,16 @@ begin
     debug(i, 2)       <= resize(ddci ,32);
     debug(i, 3)       <= resize(ddcq ,32);
     debugvalid(i)     <= ddcvalid & ddcvalid & phaseampvalid & phaseampvalid;
-    daqtrig   (i)     <= phaseampsync;
+--    daqtrig   (i)     <= phaseampsync;
   end generate;
+  daqtrig <= phaseampsync;
 
   --
   --  Diagnostic Bus for BSA/BSS/MPS
   --
   diagn             <= r.data;         -- generated data
   diagnValids       <= (others=>'0');  -- data is not real
-  dstrobe           <= sync;           
+  dstrobe           <= sync;
   diagnStrobe       <= dstrobe;        -- new timing frame
   diagnClk          <= clk;
   diagnRst          <= rst or modelReg(0)(0);
@@ -160,7 +159,7 @@ begin
     if dstrobe = '1' then
       v.count := r.count+1;
     end if;
-    
+
     for i in 0 to 31 loop
       v.data(i) := toSlv(i,4) & r.count;
     end loop;
@@ -168,7 +167,7 @@ begin
     if rst = '1' then
       v := REG_INIT_C;
     end if;
-    
+
     rin <= v;
   end process;
 

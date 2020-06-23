@@ -1,20 +1,14 @@
 -------------------------------------------------------------------------------
 -- Title      : DdcSync
 -------------------------------------------------------------------------------
--- File       : DdcSync.vhd
--- Author     : Matt Weaver <weaver@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2016-02-25
--- Last update: 2020-04-30
--- Platform   : 
--- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 LLRF Development'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 LLRF Development', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 LLRF Development', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
 
@@ -22,7 +16,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
-use work.StdRtlPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
+
 use work.LlrfPkg.all;
 
 entity DdcSync is
@@ -39,7 +35,7 @@ architecture rtl of DdcSync is
 
 begin
 
-  U_SYNC : entity work.SynchronizerFifo
+  U_SYNC : entity surf.SynchronizerFifo
      generic map (
        TPD_G             => TPD_G,
        DATA_WIDTH_G      => 42)

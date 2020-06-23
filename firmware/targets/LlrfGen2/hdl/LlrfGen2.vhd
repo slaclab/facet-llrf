@@ -1,33 +1,36 @@
 -------------------------------------------------------------------------------
--- File       : LlrfGen2.vhd
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2017-02-04
--- Last update: 2019-10-15
 -------------------------------------------------------------------------------
 -- Description: Firmware Target's Top Level
--- 
+--
 -- Note: Common-to-Application interface defined in HPS ESD: LCLSII-2.7-ES-0536
--- 
+--
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 AMC Carrier Firmware'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 AMC Carrier Firmware', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 AMC Carrier Firmware', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
 
-use work.StdRtlPkg.all;
-use work.AxiStreamPkg.all;
-use work.SsiPkg.all;
-use work.AxiLitePkg.all;
-use work.TimingPkg.all;
-use work.AmcCarrierPkg.all;
-use work.AppTopPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
+use surf.AxiStreamPkg.all;
+use surf.AxiLitePkg.all;
+use surf.SsiPkg.all;
+use surf.jesd204bpkg.all;
+
+library amc_carrier_core;
+use amc_carrier_core.AmcCarrierPkg.all;
+use amc_carrier_core.AppTopPkg.all;
+
+library lcls_timing_core;
+use lcls_timing_core.TimingPkg.all;
 
 entity LlrfGen2 is
    generic (
@@ -69,12 +72,12 @@ entity LlrfGen2 is
       rtmHsRxN         : in    sl;
       rtmHsTxP         : out   sl;
       rtmHsTxN         : out   sl;
-      -- RTM's Clock Reference 
+      -- RTM's Clock Reference
       genClkP          : in    sl;
       genClkN          : in    sl;
       ----------------
       -- Core Ports --
-      ----------------   
+      ----------------
       -- Common Fabricate Clock
       fabClkP          : in    sl;
       fabClkN          : in    sl;
@@ -164,7 +167,7 @@ architecture top_level of LlrfGen2 is
    signal axilReadSlave        : AxiLiteReadSlaveType;
    signal axilWriteMaster      : AxiLiteWriteMasterType;
    signal axilWriteSlave       : AxiLiteWriteSlaveType;
-   -- Timing Interface (timingClk domain) 
+   -- Timing Interface (timingClk domain)
    signal timingClk            : sl;
    signal timingRst            : sl;
    signal timingBus            : TimingBusType;
@@ -210,10 +213,10 @@ architecture top_level of LlrfGen2 is
 
 begin
 
-   U_AppTop : entity work.AppTop
+   U_AppTop : entity amc_carrier_core.AppTop
       generic map (
          TPD_G                => TPD_G,
-         MR_LCLS_APP_G        => true,  -- Configured by application         
+         MR_LCLS_APP_G        => true,  -- Configured by application
          -- JESD Generics
          JESD_DRP_EN_G        => false,           -- Configured by application
          JESD_RX_LANE_G       => (others => 6),   -- Configured by application
@@ -221,7 +224,7 @@ begin
          JESD_RX_POLARITY_G   => (others => "0111111"),  -- Configured by application
          JESD_TX_POLARITY_G   => (others => "0001010"),  -- Configured by application
          JESD_RX_ROUTES_G     => (others => JESD_ROUTES_INIT_C),  -- Configured by application
-         JESD_TX_ROUTES_G     => (others => JESD_TX_ROUTES_C),  -- Configured by application            
+         JESD_TX_ROUTES_G     => (others => JESD_TX_ROUTES_C),  -- Configured by application
          JESD_REF_SEL_G       => (      -- Configured by application
             0                 => DEV_CLK0_SEL_C,  -- AmcDwnConvt@Version2 = AB6/AB5
             1                 => DEV_CLK0_SEL_C),  -- AmcUpConvt@Version2 = M6/M5
@@ -243,7 +246,7 @@ begin
          axilReadSlave        => axilReadSlave,
          axilWriteMaster      => axilWriteMaster,
          axilWriteSlave       => axilWriteSlave,
-         -- Timing Interface (timingClk domain) 
+         -- Timing Interface (timingClk domain)
          timingClk            => timingClk,
          timingRst            => timingRst,
          timingBus            => timingBus,
@@ -321,11 +324,11 @@ begin
          rtmHsRxN             => rtmHsRxN,
          rtmHsTxP             => rtmHsTxP,
          rtmHsTxN             => rtmHsTxN,
-         -- RTM's Clock Reference 
+         -- RTM's Clock Reference
          genClkP              => genClkP,
          genClkN              => genClkN);
 
-   U_Core : entity work.AmcCarrierCoreAdv
+   U_Core : entity amc_carrier_core.AmcCarrierCoreAdv
       generic map (
          TPD_G           => TPD_G,
          BUILD_INFO_G    => BUILD_INFO_G,
@@ -348,7 +351,7 @@ begin
          axilReadSlave        => axilReadSlave,
          axilWriteMaster      => axilWriteMaster,
          axilWriteSlave       => axilWriteSlave,
-         -- Timing Interface (timingClk domain) 
+         -- Timing Interface (timingClk domain)
          timingClk            => timingClk,
          timingRst            => timingRst,
          timingBus            => timingBus,
@@ -393,7 +396,7 @@ begin
          ethPhyReady          => ethPhyReady,
          ----------------
          -- Core Ports --
-         ----------------   
+         ----------------
          -- Common Fabricate Clock
          fabClkP              => fabClkP,
          fabClkN              => fabClkN,

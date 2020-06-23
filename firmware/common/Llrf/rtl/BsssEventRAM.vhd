@@ -1,30 +1,24 @@
 -----------------------------------------------------------------------------
--- Title      : 
--------------------------------------------------------------------------------
--- File       : BsssEventRAM.vhd
--- Author     : Matt Weaver <weaver@slac.stanford.edu>
 -- Company    : SLAC National Accelerator Laboratory
--- Created    : 2015-09-25
--- Last update: 2019-10-17
--- Platform   : 
--- Standard   : VHDL'93/02
 -------------------------------------------------------------------------------
--- Description: 
+-- Description:
 -------------------------------------------------------------------------------
 -- This file is part of 'LCLS2 Timing Core'.
--- It is subject to the license terms in the LICENSE.txt file found in the 
--- top-level directory of this distribution and at: 
---    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
--- No part of 'LCLS2 Timing Core', including this file, 
--- may be copied, modified, propagated, or distributed except according to 
+-- It is subject to the license terms in the LICENSE.txt file found in the
+-- top-level directory of this distribution and at:
+--    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+-- No part of 'LCLS2 Timing Core', including this file,
+-- may be copied, modified, propagated, or distributed except according to
 -- the terms contained in the LICENSE.txt file.
 -------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.std_logic_arith.all;
 
-use work.StdRtlPkg.all;
+library surf;
+use surf.StdRtlPkg.all;
 
 library unisim;
 use unisim.vcomponents.all;
@@ -44,7 +38,7 @@ end entity BsssEventRAM;
 architecture rtl of BsssEventRAM is
 
   function INIT_VAL(iline : integer) return slv is
-    variable k : integer; 
+    variable k : integer;
     variable v : slv(255 downto 0) := (others=>'0');
   begin
     for i in 0 to 3 loop
@@ -57,7 +51,7 @@ architecture rtl of BsssEventRAM is
   end function;
 
   signal doutb : slv(63 downto 0);
-  
+
 begin
 
   U_RAM : RAMB36E2
@@ -185,5 +179,5 @@ begin
       DOUTPBDOUTP               => open );
 
   dout <= doutb(47 downto 0);
-  
+
 end rtl;
