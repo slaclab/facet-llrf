@@ -513,11 +513,20 @@ begin
      diagn    (i) <= diagnDataV(32*i+31 downto 32*i);
      diagnSevr(i) <= diagnSevrV(2*i+1 downto 2*i);
    end generate;
-   trigDaqOut (0)      <= debug185(0).sync;
-   trigDaqOut (1)      <= debug185(4).sync;
+
+   U_SYNC_TRIG : for i in 1 downto 0 generate
+
+      U_SYNC_ONE_SHOT  : entity surf.SynchronizerOneShot
+         generic map (
+            TPD_G => TPD_G)
+         port map (
+            clk     => jesdClk(i),
+            dataIn  => trigIn,
+            dataOut => trigDaqOut(i));
+
+   end generate;
 
 -- TODO tie to dsp core
    rfSwitch <= '1';
 
 end mapping;
-
