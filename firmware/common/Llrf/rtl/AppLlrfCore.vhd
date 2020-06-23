@@ -461,7 +461,8 @@ begin
        jesdClk2x              => jesdClk2x(1),
        jesdRst2x              => jesdRst2x(1),
        timingClk              => timingClk,
-       trigIn                 => trigPulse, -- sync'd inside
+       trigIn                 => trigPulse, -- sync'd inside for HLS
+       trigInJesd2x           => trigPulseSync,
        timeslotIn             => timeslotIn,
        timestampIn            => timestamp,
        dmodIn                 => dmod,
@@ -521,7 +522,7 @@ begin
             TPD_G => TPD_G)
          port map (
             clk     => jesdClk(i),
-            dataIn  => trigIn,
+            dataIn  => trigPulse,
             dataOut => trigDaqOut(i));
 
    end generate;
