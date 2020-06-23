@@ -7,7 +7,8 @@ export USE_XVC_DEBUG = 1
 # PRJ_VERSION = 0x00000003  Refactor of code
 # PRJ_VERSION = 0x00000004  Use example model from Charlie
 # PRJ_VERSION = 0x00000005  HLS LLRF
-export PRJ_VERSION = 0x00000005
+# PRJ_VERSION = 0x00000006  Add HW trigger
+export PRJ_VERSION = 0x00000006
 
 ##########################################################################################
 # Applications must define if using advance AMC carrier build
