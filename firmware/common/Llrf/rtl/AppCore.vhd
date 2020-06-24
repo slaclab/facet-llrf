@@ -258,13 +258,13 @@ begin
    dacValues(0,4) <= (others => '0');
    dacValues(0,5) <= (others => '0');
    dacValues(0,6) <= (others => '0');
-   dacValues(1,0) <= (others => '0');
-   dacValues(1,1) <= s_dacHs; -- to DAC
-   dacValues(1,2) <= (others => '0');
-   dacValues(1,3) <= s_dacHs; -- for DaqMux
-   dacValues(1,4) <= (others => '0');
-   dacValues(1,5) <= (others => '0');
-   dacValues(1,6) <= (others => '0');
+   dacValues(1,0) <= s_dacHs;
+   dacValues(1,1) <= s_dacHs;
+   dacValues(1,2) <= s_dacHs;
+   dacValues(1,3) <= s_dacHs;
+   dacValues(1,4) <= s_dacHs;
+   dacValues(1,5) <= s_dacHs;
+   dacValues(1,6) <= s_dacHs;
 
    GEN_ADC_SIGNALS :
    for i in 5 downto 0 generate
