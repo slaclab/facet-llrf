@@ -42,6 +42,7 @@ mmio: &mmio
               instantiate: false
         DacSigGen:
           <<: *DacSigGen
+          instantiate: true
           at:
             offset: 0x70000000
             nelms: 1
