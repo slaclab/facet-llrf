@@ -258,10 +258,10 @@ begin
    dacValues(0,4) <= (others => '0');
    dacValues(0,5) <= (others => '0');
    dacValues(0,6) <= (others => '0');
-   dacValues(1,0) <= s_dacLs(0);
-   dacValues(1,1) <= s_dacLs(1);
-   dacValues(1,2) <= s_dacLs(2);
-   dacValues(1,3) <= s_dacHs;
+   dacValues(1,0) <= (others => '0');
+   dacValues(1,1) <= s_dacHs; -- to DAC
+   dacValues(1,2) <= (others => '0');
+   dacValues(1,3) <= s_dacHs; -- for DaqMux
    dacValues(1,4) <= (others => '0');
    dacValues(1,5) <= (others => '0');
    dacValues(1,6) <= (others => '0');
