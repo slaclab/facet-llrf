@@ -275,7 +275,17 @@ Dac38J84: &Dac38J84
         offset: 0x128
       class: IntField
       name: InitJesd
-      sizeBits: 5
+      sizeBits: 4
+      lsBit: 1
+      mode: RW
+      description: InitJesd
+    #########################################################    
+    JesdRstN:
+      at:
+        offset: 0x128
+      class: IntField
+      name: JesdRstN
+      sizeBits: 1
       lsBit: 0
       mode: RW
       description: InitJesd
@@ -327,3 +337,34 @@ Dac38J84: &Dac38J84
         - entry: EnableTx
           value: 0x1
     #########################################################    
+    NcoSync:
+      class: SequenceCommand
+      at:
+        offset: 0x0
+      description: Special DAC Init procedure to sync NCO
+      sequence:
+        # Disable TX
+        - entry: EnableTx
+          value: 0x0
+        - entry: usleep
+          value: 10000
+        - entry: InitJesd
+          value: 0x1
+        - entry: usleep
+          value: 10000
+        - entry: JesdRstN
+          value: 0x0
+        - entry: usleep
+          value: 10000
+        - entry: JesdRstN
+          value: 0x1
+        - entry: usleep
+          value: 10000
+        - entry: InitJesd
+          value: 0x0
+        - entry: usleep
+          value: 10000
+        - entry: EnableTx
+          value: 0x1
+        - entry: usleep
+          value: 10000
