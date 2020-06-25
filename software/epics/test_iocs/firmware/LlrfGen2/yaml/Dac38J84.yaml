@@ -314,6 +314,8 @@ Dac38J84: &Dac38J84
           value: 0x0
         - entry: DacReg[108]
           value: 0x0
+        - entry: DacReg[109]
+          value: 0x0
     #########################################################
     InitDac:
       class: SequenceCommand
