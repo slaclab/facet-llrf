@@ -56,6 +56,7 @@ if __name__ == "__main__":
     for i in range(retry_max):
         print('Executing init code, try {}...'.format(i))
         epics.caput('{}:AT:ATJ1:JR:ResetGTs:St'.format(epics_prefix), 1)
+        epics.caput('{}:AT:ATJ1:JT:ResetGTs:St'.format(epics_prefix), 1)
         epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrDwnLmkChip:Ex'.format(epics_prefix), 1)
         epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrDwnSysRef:Ex'.format(epics_prefix), 1)
         epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrUpLmkChip:Ex'.format(epics_prefix), 1)
@@ -63,11 +64,19 @@ if __name__ == "__main__":
         epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrUpSysRef:Ex'.format(epics_prefix), 1)
         time.sleep(0.250)
         rx_enable = epics.caget('{}:AT:ATJ1:JR:Enable:Rd'.format(epics_prefix))
+        tx_enable = epics.caget('{}:AT:ATJ1:JT:Enable:Rd'.format(epics_prefix))
         epics.caput('{}:AT:ATJ1:JR:Enable:St'.format(epics_prefix), 0)
         epics.caput('{}:AT:ATJ1:JR:ResetGTs:St'.format(epics_prefix),0)
+        epics.caput('{}:AT:ATJ1:JT:Enable:St'.format(epics_prefix), 0)
+        epics.caput('{}:AT:ATJ1:JT:ResetGTs:St'.format(epics_prefix),0)
         time.sleep(0.250)
+        epics.caput('{}:AT:ATJ1:JT:ClearTxStatus:Ex'.format(epics_prefix), 1)
+        epics.caput('{}:AT:ATJ1:JT:Enable:St'.format(epics_prefix), tx_enable)
         epics.caput('{}:AT:ATJ1:JR:ClearRxErrors:Ex'.format(epics_prefix), 1)
         epics.caput('{}:AT:ATJ1:JR:Enable:St'.format(epics_prefix), rx_enable)
+
+        
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:NcoSync:Ex'.format(epics_prefix), 1)
 
         link_locked = True
 
@@ -75,28 +84,45 @@ if __name__ == "__main__":
         jesdrx1_pos_err    = poll_and_read_pv('{}:AT:ATJ1:JR:PositionErr:Rd'.format(epics_prefix))
         jesdrx1_align_err  = poll_and_read_pv('{}:AT:ATJ1:JR:AlignErr:Rd'.format(epics_prefix))
 
-        if check_if_zero(jesdrx1_data_valid) or check_if_not_zero(jesdrx1_pos_err) or check_if_not_zero(jesdrx1_align_err):
+        if not (check_if_not_zero(jesdrx1_data_valid) and check_if_zero(jesdrx1_pos_err) and check_if_zero(jesdrx1_align_err) ):
             print('Link not locked:')
-            print '/mmio/AppTop/AppTopJesd[1]/JesdRx/DataValid   = ',
+            print '/mmio/AppTop/AppTopJesd1/JesdRx/DataValid   = ',
             for x in jesdrx1_data_valid:
                 print "{} ".format(x),
             print('')
-            print '/mmio/AppTop/AppTopJesd[1]/JesdRx/PositionErr = ',
+            print '/mmio/AppTop/AppTopJesd1/JesdRx/PositionErr = ',
             for x in jesdrx1_pos_err:
                 print "{} ".format(x),
             print('')
-            print  '/mmio/AppTop/AppTopJesd[1]/JesdRx/AlignErr    = ',
+            print  '/mmio/AppTop/AppTopJesd1/JesdRx/AlignErr    = ',
             for x in jesdrx1_align_err:
                 print "{} ".format(x),
             print('')
             link_locked = False
 
+        jesdtx1_data_valid = poll_and_read_pv('{}:AT:ATJ1:JT:DataValid:Rd'.format(epics_prefix))
+
+        if not check_if_not_zero(jesdtx1_data_valid):
+            print('Link not locked:')
+            print '/mmio/AppTop/AppTopJesd1/JesdTx/DataValid   = ',
+            for x in jesdtx1_data_valid:
+                print "{} ".format(x),
+            print('')
+            link_locked = False
+
+
+        sysref_period_min = poll_and_read_pv('{}:AT:ATJ1:JT:SysRefPeriodmin:Rd'.format(epics_prefix))
+        sysref_period_max = poll_and_read_pv('{}:AT:ATJ1:JT:SysRefPeriodmax:Rd'.format(epics_prefix))
+
+        if sysref_period_min != sysref_period_max:
+            print('AppTopJesd1/JesdTx link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
+            link_locked = False
 
         sysref_period_min = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmin:Rd'.format(epics_prefix))
         sysref_period_max = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmax:Rd'.format(epics_prefix))
 
         if sysref_period_min != sysref_period_max:
-            print('Link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
+            print('AppTopJesd1/JesdRx link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
             link_locked = False
 
         if link_locked:
@@ -110,8 +136,13 @@ if __name__ == "__main__":
     print('')
 
     jesdrx1_data_valid = poll_and_read_pv('{}:AT:ATJ1:JR:DataValid:Rd'.format(epics_prefix))
-    print '/mmio/AppTop/AppTopJesd[1]/JesdRx/DataValid = ',
+    print '/mmio/AppTop/AppTopJesd1/JesdRx/DataValid = ',
     for x in jesdrx1_data_valid:
+        print "{} ".format(x),
+    print('')
+    jesdtx1_data_valid = poll_and_read_pv('{}:AT:ATJ1:JT:DataValid:Rd'.format(epics_prefix))
+    print '/mmio/AppTop/AppTopJesd1/JesdTx/DataValid = ',
+    for x in jesdtx1_data_valid:
         print "{} ".format(x),
     print('')
     print('==============================')
