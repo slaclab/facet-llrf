@@ -743,14 +743,6 @@
                 - Limit_7_Hz
                 - Limit_7_Hz
                 - Limit_7_Hz
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
             - channelSevr: !<value> 0x0000000000000000
             - channelMask: !<value> 0x00000000
             - enable: !<value> 0x0
@@ -1275,7 +1267,7 @@
                 - AdcReg_0x0003: !<value> 0x03
                 - AdcReg_0x0002: !<value> 0x00
                 - AdcReg_0x0000: !<value> 0x3c
-    - AppTopJesd:
+    - AppTopJesd0:
         - JesdRx:
             - ThresholdHigh: !<value>
                 - 0xa000
@@ -1322,6 +1314,69 @@
             - SubClass: !<value> 0x1
             - SysrefDelay: !<value> 0x00
             - Enable: !<value> 0x3f
+    - AppTopJesd1:
+        - JesdRx:
+            - ThresholdHigh: !<value>
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0x0000
+                - 0x0000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0x0000
+                - 0x0000
+            - ThresholdLow: !<value>
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x0000
+                - 0x0000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x0000
+                - 0x0000
+            - PowerDown: !<value> 0x00
+            - LinkErrMask: !<value> 0x3f
+            - InvertAdcData: !<value> 0x00
+            - ScrambleEnable: !<value> Enabled
+            - InvertSync: !<value> Inverted
+            - ResetGTs: !<value> 0x0
+            - ClearErrors: !<value> 0x0
+            - ReplaceEnable: !<value> Enabled
+            - SubClass: !<value> 0x1
+            - SysrefDelay: !<value> 0x00
+            - Enable: !<value> 0x3f
+        - JesdTx:
+            - Enable: !<value> 0x4 #Turn on only lane we need TX2 goes to serdes3
+            - HighAmplitudeVal: !<value> 0xC000
+            - LowAmplitudeVal: !<value> 0x4000
+            - SquarePeriod: !<value> 0x0004
+            - RampStep: !<value> 0x0001
+            - ScrambleEnable: !<value> Enabled
+            - TestSigEnable: !<value> 0x0
+            - InvertSync: !<value> 0x0
+            - ReplaceEnable: !<value> 0x1
+            - SubClass: !<value> 0x1
+            - dataOutMux: !<value> 'UserData'
+            - testOutMux: !<value> 'SquareWave'
+            - TxDiffCtrl: !<value> 0xFF
+            - TxPostCursor: !<value> 0xF
+            - TxPreCursor: !<value> 0xF
     - DaqMuxV2:
         - DecimationAveraging: !<value>
             - Enabled
