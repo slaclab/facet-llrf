@@ -49,7 +49,8 @@ if __name__ == "__main__":
     print('==============================')
     print('')
 
-    # Emulate pyrogue's AppTop.Init()
+    # Emulate pyrogue's AppTop.Init(), taken from 
+    # https://github.com/slaclab/amc-carrier-core/blob/32108759758761ffcf6182e61fdf8018eaf5910b/python/AmcCarrierCore/AppTop/_AppTop.py
     print('Running initialization code...')
 
     retry_max = 8
