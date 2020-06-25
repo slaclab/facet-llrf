@@ -35,12 +35,15 @@ AppTop: &AppTop
         nelms: 2
         stride: 0x10000000 
     ##################################################     
-    AppTopJesd:
+    AppTopJesd0:
       <<: *AppTopJesd
       at:
         offset: 0x40000000 
-        nelms: 2
-        stride: 0x10000000   
+    ##################################################
+    AppTopJesd1:
+      <<: *AppTopJesd
+      at:
+        offset: 0x50000000 
     ##################################################
     DacSigGen:
       <<: *DacSigGen
