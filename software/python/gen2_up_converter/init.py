@@ -95,7 +95,7 @@ if __name__ == "__main__":
         sysref_period_min = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmin:Rd'.format(epics_prefix))
         sysref_period_max = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmax:Rd'.format(epics_prefix))
 
-        if sysref_period_min != (sysref_period_max - 1):
+        if sysref_period_min != sysref_period_max:
             print('Link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
             link_locked = False
 
