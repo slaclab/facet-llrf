@@ -75,6 +75,41 @@ if __name__ == "__main__":
 
         time.sleep(1.000)
 
+        # DAC init
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:EnableTx:St'.format(epics_prefix), 0)
+        time.sleep(0.010)
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:ClearAlarms:Ex'.format(epics_prefix), 1)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[60] |= 0x200
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[60] &= 0xFDFF
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x1E
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x1E
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x1F
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x01
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:EnableTx:St'.format(epics_prefix), 1)
+
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:NcoSync:Ex'.format(epics_prefix), 1)
+
+        time.sleep(1.000)
+
         epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:ClearAlarms:Ex'.format(epics_prefix), 1)
 
         epics.caput('{}:AT:ATJ1:JT:ClearTxStatus:Ex'.format(epics_prefix), 1)
