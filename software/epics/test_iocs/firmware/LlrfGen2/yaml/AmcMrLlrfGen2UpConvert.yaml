@@ -82,4 +82,12 @@ AmcMrLlrfGen2UpConvert: &AmcMrLlrfGen2UpConvert
         # Clear the Alarms
         - entry: Lmk04828/InitLmk          
           value: 0x1        
+
+        # Init the DAC
+        - entry: Dac38J84/InitDac
+          value: 0x1
+
+        # Clear DAC alarms
+        - entry: Dac38J84/ClearAlarms
+          value: 0x1
     ##################################################
