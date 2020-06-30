@@ -723,12 +723,12 @@
             - SoftBufferTrigger: !<value> 0x0
             - TuneSled: !<value> 0x0
             - CfgRegister: !<value> 0xff1c
-            - ModNVRegB: !<value> 0x00
-            - ModNVRegA: !<value> 0x00
-            - ModWiperRegA: !<value> 0x2B
-            - ModWiperRegB: !<value> 0x20
-            - KlyWiperRegB: !<value> 0x6C
-            - KlyWiperRegA: !<value> 0x3D
+            #- ModNVRegB: !<value> 0x00
+            #- ModNVRegA: !<value> 0x00
+            #- ModWiperRegA: !<value> 0x2B
+            #- ModWiperRegB: !<value> 0x20
+            #- KlyWiperRegB: !<value> 0x6C
+            #- KlyWiperRegA: !<value> 0x3D
             - ClearFault: !<value> 0x1 # command to clear fault
         - BSSS:
             - EdefDestSel: !<value> 0x00000
