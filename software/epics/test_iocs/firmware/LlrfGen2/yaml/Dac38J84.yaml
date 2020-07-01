@@ -252,25 +252,13 @@ Dac38J84: &Dac38J84
       mode: RO
       description: "LaneAlarm"
     #########################################################
-    VersionId:
+    ID:
       at:
         offset: 0x1FC
       class: IntField
-      name: VersionId
-      sizeBit: 3
-      lsBit: 0
+      name: ID
       mode: RO
-      description: Version ID
-    #########################################################
-    VendorId:
-      at:
-        offset: 0x1FC
-      class: IntField
-      name: VendorId
-      sizeBit: 2
-      lsBit: 3
-      mode: RO
-      description: Vendor ID
+      description: Serials and IDs
     #########################################################
     EnableTx:
       at:
