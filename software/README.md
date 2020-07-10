@@ -11,3 +11,5 @@ Sub-directory  | Description
 epics          | Contains EPICS IOCs.
 matlab         | Contains MATLAB scripts. 
 python         | Contains python scripts.
+cpp            | Contains C++ programs.
+shell          | Contains shell scripts.
