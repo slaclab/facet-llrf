@@ -991,7 +991,7 @@
             - Dac38J84:
                 - EnableTx: !<value> 0x1
                 - DacReg: !<value>
-                    - 0x0218
+                    - 0x0018
                     - 0x0003
                     - 0x2082 #zero JESD when link not estb not 2s 4 wire
                     - 0xA300
@@ -1067,9 +1067,9 @@
                     - 0x0000 # 4 seems right, sends JESD0 to link 0 and JESD1 to Link1
                     - 0x821 # Only use RX3
                     - 0x0801
-                    - 0x0901 #using 2 lanes of JESD
+                    - 0x1f01 #using 2 lanes of JESD
                     - 0x0100
-                    - 0x0f0f  # Enable scrambler nothigh density mode
+                    - 0x0f2f  # Enable scrambler nothigh density mode
                     - 0x1c61
                     - 0x0000
                     - 0x00DC  # sync_request_ena_link0
