@@ -385,6 +385,8 @@ JesdRx_6: &JesdRx_6
       sequence:
       - entry: ResetGTs
         value: 0x1
+      - entry: usleep
+        value: 1000000
       - entry: ResetGTs
         value: 0x0
     #########################################################
