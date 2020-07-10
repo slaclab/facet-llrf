@@ -24,7 +24,7 @@ epicsEnvSet("YAML_DIR","firmware/LlrfGen2/yaml")
 epicsEnvSet("YAML","${YAML_DIR}/000TopLevel.yaml")
 
 # Defaults Yaml file
-epicsEnvSet("DEFAULTS_FILE", "${YAML_DIR}/config/defaults.yaml")
+epicsEnvSet("DEFAULTS_FILE", "${YAML_DIR}/config/defaults_cw.yaml")
 
 # FPGA IP Address
 epicsEnvSet("FPGA_IP","10.0.1.106")
