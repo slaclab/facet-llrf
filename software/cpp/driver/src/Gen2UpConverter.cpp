@@ -6,13 +6,14 @@ const std::string Gen2UpConverter::AmcTopModuleName  = "/mmio/AppTop/AppCore/Amc
 
 Gen2UpConverter::Gen2UpConverter(Path r)
 :
-    root          ( r ),
-    jesdRoot      ( root->findByName( JesdTopModuleName.c_str() ) ),
-    amcRoot       ( root->findByName( AmcTopModuleName.c_str() ) ),
-    jesdRx        ( jesdRoot ),
-    jesdTx        ( jesdRoot ),
-    lmk           ( amcRoot ),
-    dac           ( amcRoot )
+    root           ( r ),
+    jesdRoot       ( root->findByName( JesdTopModuleName.c_str() ) ),
+    amcRoot        ( root->findByName( AmcTopModuleName.c_str() ) ),
+    jesdRx         ( jesdRoot ),
+    jesdTx         ( jesdRoot ),
+    lmk            ( amcRoot ),
+    dac            ( amcRoot ),
+    initAmcCardCmd ( ICommand::create(amcRoot->findByName("InitAmcCard") ) )
 {
     std::cout << "Gen2UpConverter object created" << std::endl;
 }
@@ -34,10 +35,6 @@ bool Gen2UpConverter::init()
 
     std::cout << "Executing init sequence..." << std::endl;
 
-    // Create interfaces
-    // - AMC
-    Command init_card       = ICommand::create(amcRoot->findByName("InitAmcCard"));
-    
     // Initilizaztion sequence
     bool success;
     std::size_t maxRetries { 10 };

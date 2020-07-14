@@ -35,6 +35,9 @@ private:
     JesdTx     jesdTx;
     Lmk04828   lmk;
     Dac38J84   dac;
+
+    // Local commands
+    Command    initAmcCardCmd;
 };
 
 #endif
