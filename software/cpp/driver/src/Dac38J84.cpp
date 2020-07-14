@@ -1,11 +1,11 @@
 #include "Dac38J84.h"
 
-const std::string Dac38J84::DacModuleName = "Dac38J84";
+const std::string Dac38J84::ModuleName = "Dac38J84";
 const std::size_t Dac38J84::MaxNumLanes = 8;
 
 Dac38J84::Dac38J84(Path r)
 :
-    root                   ( r->findByName( DacModuleName.c_str() ) ),
+    root                   ( r->findByName( ModuleName.c_str() ) ),
     enableTxReg            ( IScalVal::create( root->findByName("EnableTx") )  ),
     clearAlarmsCmd         ( ICommand::create( root->findByName("ClearAlarms") ) ),
     ncoSyncCmd             ( ICommand::create( root->findByName("NcoSync") ) ),
@@ -215,6 +215,7 @@ bool Dac38J84::isLocked(bool verbose)
     std::cout << "----------------------------------" << std::endl;
     std::cout << std::endl;
 
+    // These checks fail at the moment, so let's always return 'true' for now
     //return success;
     return true;
 }

@@ -20,7 +20,7 @@ public:
     bool isLocked(bool verbose = false);
 
 private:
-    static const std::string DacModuleName;
+    static const std::string ModuleName;
     static const std::size_t MaxNumLanes;
 
     Path        root;

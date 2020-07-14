@@ -18,21 +18,8 @@ Gen2UpConverter::Gen2UpConverter(Path r)
     std::cout << "Gen2UpConverter object created" << std::endl;
 }
 
-//bool Gen2UpConverter::init(const std::string& defaultsFileName, const std::string& path)
 bool Gen2UpConverter::init()
 {
-    //if ( defaultsFileName.empty() )
-    //{
-    //    std::cout << "Not defaults file was specified. Omiting..." << std::endl;
-    //}
-    //else
-    //{
-    //    Path configRoot = root->findByName( path.c_str() );
-    //    std::cout << "Loading '" << defaultsFileName << "'..." << std::endl;
-    //    std::size_t n = configRoot->loadConfigFromYamlFile(defaultsFileName.c_str());
-    //    std::cout << "Done. " << n << " entries were loaded" << std::endl;
-    //}
-
     std::cout << "Executing init sequence..." << std::endl;
 
     // Initilizaztion sequence
