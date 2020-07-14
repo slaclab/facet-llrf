@@ -7,6 +7,7 @@
 
 #include "JesdRx.h"
 #include "JesdTx.h"
+#include "Lmk04828.h"
 #include "Dac38J84.h"
 
 const std::string JesdTopModuleName("/mmio/AppTop/AppTopJesd1/");
@@ -32,6 +33,7 @@ private:
     // Devices
     JesdRx     jesdRx;
     JesdTx     jesdTx;
+    Lmk04828   lmk;
     Dac38J84   dac;
 };
 

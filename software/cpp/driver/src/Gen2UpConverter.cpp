@@ -11,6 +11,7 @@ Gen2UpConverter::Gen2UpConverter(Path r)
     amcRoot       ( root->findByName( AmcTopModuleName.c_str() ) ),
     jesdRx        ( jesdRoot ),
     jesdTx        ( jesdRoot ),
+    lmk           ( amcRoot ),
     dac           ( amcRoot )
 {
     std::cout << "Gen2UpConverter object created" << std::endl;
@@ -36,8 +37,6 @@ bool Gen2UpConverter::init()
     // Create interfaces
     // - AMC
     Command init_card       = ICommand::create(amcRoot->findByName("InitAmcCard"));
-    // - LMK
-    Command pwr_dwn_sys_ref = ICommand::create(amcRoot->findByName("Lmk04828/PwrDwnSysRef"));
     
     // Initilizaztion sequence
     bool success;
