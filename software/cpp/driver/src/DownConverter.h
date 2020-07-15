@@ -20,7 +20,6 @@ public:
 
 private:
     static const std::string ModuleName;
-    static const std::string JesdTopModuleName;
 
     Path       root;
     Path       jesdRoot;

@@ -1,13 +1,12 @@
 #include <unistd.h>
 #include "DownConverter.h"
 
-const std::string DownConverter::JesdTopModuleName = "AppTopJesd0";
-const std::string DownConverter::ModuleName        = "AmcMrLlrfDownConvert";
+const std::string DownConverter::ModuleName = "AmcMrLlrfDownConvert";
 
 DownConverter::DownConverter(Path p)
 :
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
-    jesdRoot       ( p->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
+    jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay0.c_str() ) ),
     jesdRx         ( jesdRoot ),
     lmk            ( root ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) )

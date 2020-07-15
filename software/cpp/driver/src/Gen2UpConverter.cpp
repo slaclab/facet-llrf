@@ -1,13 +1,12 @@
 #include <unistd.h>
 #include "Gen2UpConverter.h"
 
-const std::string Gen2UpConverter::ModuleName        = "AmcMrLlrfGen2UpConvert";
-const std::string Gen2UpConverter::JesdTopModuleName = "AppTopJesd1";
+const std::string Gen2UpConverter::ModuleName = "AmcMrLlrfGen2UpConvert";
 
 Gen2UpConverter::Gen2UpConverter(Path p)
 :
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
-    jesdRoot       ( p->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
+    jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay1.c_str() ) ),
     jesdRx         ( jesdRoot ),
     jesdTx         ( jesdRoot ),
     lmk            ( root ),
