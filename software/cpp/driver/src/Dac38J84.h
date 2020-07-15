@@ -6,6 +6,7 @@
 #include <cpsw_api_user.h>
 
 #include "helpers.h"
+#include "Logger.h"
 
 class Dac38J84
 {
@@ -43,6 +44,7 @@ private:
     ScalVal_RO  frameAlignErrReg;
     ScalVal_RO  multiFrameAlignErrReg;
     std::size_t numLanes;
+    Logger      log;
 };
 
 #endif
