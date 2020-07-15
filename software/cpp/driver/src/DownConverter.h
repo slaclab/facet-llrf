@@ -12,7 +12,7 @@
 class DownConverter
 {
 public: 
-    DownConverter(Path r);
+    DownConverter(Path p);
 
     bool init();
 
@@ -23,7 +23,6 @@ private:
     static const std::string JesdTopModuleName;
 
     Path       root;
-    Path       amcRoot;
     Path       jesdRoot;
 
     // Devices

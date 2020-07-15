@@ -4,16 +4,15 @@
 const std::string Gen2UpConverter::ModuleName        = "AmcMrLlrfGen2UpConvert";
 const std::string Gen2UpConverter::JesdTopModuleName = "AppTopJesd1";
 
-Gen2UpConverter::Gen2UpConverter(Path r)
+Gen2UpConverter::Gen2UpConverter(Path p)
 :
-    root           ( r ),
-    amcRoot        ( root->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
-    jesdRoot       ( root->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
+    root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
+    jesdRoot       ( p->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
     jesdRx         ( jesdRoot ),
     jesdTx         ( jesdRoot ),
-    lmk            ( amcRoot ),
-    dac            ( amcRoot ),
-    initAmcCardCmd ( ICommand::create(amcRoot->findByName("InitAmcCard") ) )
+    lmk            ( root ),
+    dac            ( root ),
+    initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) )
 {
     std::cout << ModuleName << " object created" << std::endl;
 }

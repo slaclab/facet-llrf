@@ -4,14 +4,13 @@
 const std::string DownConverter::JesdTopModuleName = "AppTopJesd0";
 const std::string DownConverter::ModuleName        = "AmcMrLlrfDownConvert";
 
-DownConverter::DownConverter(Path r)
+DownConverter::DownConverter(Path p)
 :
-    root           ( r ),
-    amcRoot        ( root->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
-    jesdRoot       ( root->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
+    root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
+    jesdRoot       ( p->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
     jesdRx         ( jesdRoot ),
-    lmk            ( amcRoot ),
-    initAmcCardCmd ( ICommand::create(amcRoot->findByName("InitAmcCard") ) )
+    lmk            ( root ),
+    initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) )
 {
     std::cout << ModuleName << " object created" << std::endl;
 }
