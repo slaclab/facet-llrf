@@ -5,9 +5,10 @@ const std::string Lmk04828::ModuleName = "Lmk04828";
 Lmk04828::Lmk04828(Path r)
 :
     root            ( r->findByName( ModuleName.c_str() ) ),
-    pwrDwnSysRefCmd ( ICommand::create( root->findByName("PwrDwnSysRef") ) )
+    pwrDwnSysRefCmd ( ICommand::create( root->findByName("PwrDwnSysRef") ) ),
+    log             ( ModuleName.c_str() )
 {
-    std::cout << ModuleName << " object created" << std::endl;
+    log(LoggerLevel::Debug) << "Object created";
 }
 
 void Lmk04828::pwrDwnSysRef()

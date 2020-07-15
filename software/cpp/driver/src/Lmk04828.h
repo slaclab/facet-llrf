@@ -6,6 +6,7 @@
 #include <cpsw_api_user.h>
 
 #include "helpers.h"
+#include "Logger.h"
 
 class Lmk04828
 {
@@ -19,6 +20,7 @@ private:
 
     Path        root;
     Command     pwrDwnSysRefCmd;
+    Logger      log;
 };
 
 #endif
