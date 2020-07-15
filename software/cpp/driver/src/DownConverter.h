@@ -8,6 +8,7 @@
 #include "CpswTopPaths.h"
 #include "JesdRx.h"
 #include "Lmk04828.h"
+#include "Logger.h"
 
 class DownConverter
 {
@@ -30,6 +31,9 @@ private:
 
     // Local commands
     Command    initAmcCardCmd;
+
+    // Logger
+    Logger     log;
 };
 
 #endif

@@ -9,22 +9,23 @@ DownConverter::DownConverter(Path p)
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay0.c_str() ) ),
     jesdRx         ( jesdRoot ),
     lmk            ( root ),
-    initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) )
+    initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
+    log            ( ModuleName.c_str() )
 {
-    std::cout << ModuleName << " object created" << std::endl;
+    log(LoggerLevel::Debug) << "Object created";
 }
 
 bool DownConverter::init()
 {
-    std::cout << "Initilizating " << ModuleName << "..." << std::endl;
+    log(LoggerLevel::Debug) << "Initilizating...";
 
     // Initilizaztion sequence
     bool success;
     std::size_t maxRetries { 10 };
     for (std::size_t i {1}; i <= maxRetries; ++i)
     {
-        std::cout << "Initilization try # " << i << "..." << std::endl;
-        std::cout << "===========================" << std::endl;
+        log(LoggerLevel::Debug) << "Initilization try # " + to_string(i) + ":";
+        log(LoggerLevel::Debug) << "===========================";
 
         // - Power down Lmk sys ref
         lmk.pwrDwnSysRef();
@@ -41,50 +42,44 @@ bool DownConverter::init()
         // - Check JesdRx errors
         success = jesdRx.isLocked();
 
-       std::cout << std::endl;
-
        if ( success )
        {
-           std::cout << "Initilization succeed!" << std::endl;
+           log(LoggerLevel::Debug) << "Initilization succeed!";
            break;
        }
        else
        {
            if ( i == maxRetries )
            {
-               std::cerr << "Initilization failed after " << maxRetries << " retries. Aborting!" << std::endl;
+                log(LoggerLevel::Error) << "Initilization failed after " + to_string(maxRetries) + " retries. Aborting!";
                break;
            }
            else
            {
-               std::cerr << "Initilization # " << i << " failed. Retying..." << std::endl;
-               std::cout << std::endl;
+               log(LoggerLevel::Warning) << "Initilization # " + to_string(i) + " failed. Retying...";
            }
        }
     }
 
-    std::cout << "===========================" << std::endl;
-    std::cout << std::endl;
+    log(LoggerLevel::Debug) << "===========================";
 
     return success;
 }
 
 bool DownConverter::isInited()
 {
-    std::cout << "Checking if " << ModuleName << " is initilize:" << std::endl;
-    std::cout << "---------------------------------------------------" << std::endl;
+    log(LoggerLevel::Debug) << "Checking lock status:";
+    log(LoggerLevel::Debug) << "----------------------------------";
 
     // Check is JesdRx is locked
     bool success { jesdRx.isLocked() };
 
-    std::cout << std::endl;
     if ( success )
-        std::cout << "Success! " << ModuleName << " is locked." << std::endl;
+        log(LoggerLevel::Debug) << "It is locked!";
     else
-        std::cout << "Error! " << ModuleName << " is not locked." << std::endl;
+        log(LoggerLevel::Error) << "It is not locked!";
 
-    std::cout << "---------------------------------------------------" << std::endl;
-    std::cout << std::endl;
+    log(LoggerLevel::Debug) << "----------------------------------";
 
     return success;
 }
