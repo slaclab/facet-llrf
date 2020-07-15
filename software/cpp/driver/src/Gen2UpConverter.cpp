@@ -99,7 +99,6 @@ bool Gen2UpConverter::isInited()
     log(LoggerLevel::Debug) << "Checking lock status:";
     log(LoggerLevel::Debug) << "----------------------------------";
 
-    uint32_t u32[8];
     bool success { true };
 
     // Check if DAC is locked
