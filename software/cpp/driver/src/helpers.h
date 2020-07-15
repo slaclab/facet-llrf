@@ -1,6 +1,8 @@
 #ifndef _HELPERS_H_
 #define _HELPERS_H_
 
+#include <sstream>
+
 #include <yaml-cpp/yaml.h>
 #include <cpsw_api_user.h>
 
@@ -43,12 +45,20 @@ bool allZeros(const std::vector<T>& vec)
 }
 
 template <typename T>
+std::string vec2str(const std::string& name, const std::vector<T>& vec)
+{
+    std::stringstream ss;
+    ss << name << " = ";
+    for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it)
+        ss << *it << " ";
+
+    return ss.str();
+}
+
+template <typename T>
 void printArray(const std::string& name, const std::vector<T>& vec)
 {
-    std::cout << name << " = ";
-    for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it)
-        std::cout << *it << " ";
-    std::cout << std::endl;
+    std::cout << vec2str(name, vec) << std::endl;
 }
 
 template <typename T>
@@ -59,6 +69,14 @@ T vec2word(const std::vector<T>& vec)
         w = ( w << 1 ) | !!(*it);
 
     return w;
+}
+
+template <typename T>
+std::string to_string(const T& n)
+{
+    std::stringstream ss;
+    ss << n;
+    return ss.str();
 }
 
 void printRegValue(Path p);
