@@ -15,12 +15,12 @@ JesdTx::JesdTx(Path r)
     resetGTsCmd        ( ICommand::create( root->findByName("ResetTxGTs") ) ), 
     numLanes           ( enableReg->getSizeBits() )
 {
-    std::cout << "JesdTx object created (number of lanes = " << numLanes << ")" << std::endl;
+    std::cout << ModuleName << " object created (number of lanes = " << numLanes << ")" << std::endl;
 }
 
 bool JesdTx::isLocked(bool verbose) const
 {
-    std::cout << "Checking is JesdTx is locked:" << std::endl;
+    std::cout << "Checking if " << ModuleName << " is locked:" << std::endl;
     std::cout << "----------------------------------" << std::endl;
 
     bool success { true };
@@ -52,9 +52,9 @@ bool JesdTx::isLocked(bool verbose) const
 
     std::cout << std::endl;
     if ( success )
-        std::cout << "Success! JedTx is locked!" << std::endl;
+        std::cout << "Success! " << ModuleName << " is locked!" << std::endl;
     else
-        std::cout << "Error! JedTx is not locked!" << std::endl;
+        std::cout << "Error! " << ModuleName << " is not locked!" << std::endl;
 
     std::cout << "----------------------------------" << std::endl;
     std::cout << std::endl;

@@ -1,24 +1,24 @@
 #include <unistd.h>
 #include "DownConverter.h"
 
-const std::string DownConverter::JesdTopModuleName = "/mmio/AppTop/AppTopJesd0/";
-const std::string DownConverter::AmcTopModuleName  = "/mmio/AppTop/AppCore/AmcMrLlrfDownConvert/";
+const std::string DownConverter::JesdTopModuleName = "AppTopJesd0";
+const std::string DownConverter::ModuleName        = "AmcMrLlrfDownConvert";
 
 DownConverter::DownConverter(Path r)
 :
     root           ( r ),
-    jesdRoot       ( root->findByName( JesdTopModuleName.c_str() ) ),
-    amcRoot        ( root->findByName( AmcTopModuleName.c_str() ) ),
+    amcRoot        ( root->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
+    jesdRoot       ( root->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
     jesdRx         ( jesdRoot ),
     lmk            ( amcRoot ),
     initAmcCardCmd ( ICommand::create(amcRoot->findByName("InitAmcCard") ) )
 {
-    std::cout << "DownConverter object created" << std::endl;
+    std::cout << ModuleName << " object created" << std::endl;
 }
 
 bool DownConverter::init()
 {
-    std::cout << "Executing init sequence..." << std::endl;
+    std::cout << "Initilizating " << ModuleName << "..." << std::endl;
 
     // Initilizaztion sequence
     bool success;
@@ -73,7 +73,7 @@ bool DownConverter::init()
 
 bool DownConverter::isInited()
 {
-    std::cout << "Checking if DownConverter board is initilize:" << std::endl;
+    std::cout << "Checking if " << ModuleName << " is initilize:" << std::endl;
     std::cout << "---------------------------------------------------" << std::endl;
 
     // Check is JesdRx is locked
@@ -81,9 +81,9 @@ bool DownConverter::isInited()
 
     std::cout << std::endl;
     if ( success )
-        std::cout << "Success! DownConverter is locked." << std::endl;
+        std::cout << "Success! " << ModuleName << " is locked." << std::endl;
     else
-        std::cout << "Error! DownConverter is not locked." << std::endl;
+        std::cout << "Error! " << ModuleName << " is not locked." << std::endl;
 
     std::cout << "---------------------------------------------------" << std::endl;
     std::cout << std::endl;

@@ -1,26 +1,26 @@
 #include <unistd.h>
 #include "Gen2UpConverter.h"
 
-const std::string Gen2UpConverter::JesdTopModuleName = "/mmio/AppTop/AppTopJesd1/";
-const std::string Gen2UpConverter::AmcTopModuleName  = "/mmio/AppTop/AppCore/AmcMrLlrfGen2UpConvert/";
+const std::string Gen2UpConverter::ModuleName        = "AmcMrLlrfGen2UpConvert";
+const std::string Gen2UpConverter::JesdTopModuleName = "AppTopJesd1";
 
 Gen2UpConverter::Gen2UpConverter(Path r)
 :
     root           ( r ),
-    jesdRoot       ( root->findByName( JesdTopModuleName.c_str() ) ),
-    amcRoot        ( root->findByName( AmcTopModuleName.c_str() ) ),
+    amcRoot        ( root->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
+    jesdRoot       ( root->findByName( (CpswTopPaths::AppTop + JesdTopModuleName).c_str() ) ),
     jesdRx         ( jesdRoot ),
     jesdTx         ( jesdRoot ),
     lmk            ( amcRoot ),
     dac            ( amcRoot ),
     initAmcCardCmd ( ICommand::create(amcRoot->findByName("InitAmcCard") ) )
 {
-    std::cout << "Gen2UpConverter object created" << std::endl;
+    std::cout << ModuleName << " object created" << std::endl;
 }
 
 bool Gen2UpConverter::init()
 {
-    std::cout << "Executing init sequence..." << std::endl;
+    std::cout << "Initilizing " << ModuleName << "..." << std::endl;
 
     // Initilizaztion sequence
     bool success;
@@ -101,7 +101,7 @@ bool Gen2UpConverter::init()
 
 bool Gen2UpConverter::isInited()
 {
-    std::cout << "Checking if UpConverterGen2 board is initilize:" << std::endl;
+    std::cout << "Checking if " << ModuleName <<" is initilize:" << std::endl;
     std::cout << "---------------------------------------------------" << std::endl;
 
     uint32_t u32[8];
@@ -118,9 +118,9 @@ bool Gen2UpConverter::isInited()
 
     std::cout << std::endl;
     if ( success )
-        std::cout << "Success! Gen2UpConverter is locked." << std::endl;
+        std::cout << "Success! " << ModuleName << " is locked." << std::endl;
     else
-        std::cout << "Error! Gen2UpConverter is not locked." << std::endl;
+        std::cout << "Error! " << ModuleName << " is not locked." << std::endl;
 
     std::cout << "---------------------------------------------------" << std::endl;
     std::cout << std::endl;

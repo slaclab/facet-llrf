@@ -26,12 +26,12 @@ Dac38J84::Dac38J84(Path r)
     multiFrameAlignErrReg  ( IScalVal_RO::create( root->findByName("MultiFrameAlignErr") ) ),
     numLanes               ( linkErrCntReg->getNelms() )
 {
-    std::cout << "Dac38J84 object created (number of lanes = " << numLanes <<  ")" << std::endl;
+    std::cout << ModuleName << " object created (number of lanes = " << numLanes <<  ")" << std::endl;
 }
 
 void Dac38J84::init()
 {
-    std::cout << "Initilizing Dac38J84... ";
+    std::cout << "Initilizing " << ModuleName << "... ";
 
     enableTxReg->setVal(0ul);
     usleep(10000);
@@ -147,7 +147,7 @@ void Dac38J84::clearAlarms()
 
 bool Dac38J84::isLocked(bool verbose)
 {
-    std::cout << "Checking is Dac38J84 is locked:" << std::endl;
+    std::cout << "Checking if " << ModuleName << " is locked:" << std::endl;
     std::cout << "----------------------------------" << std::endl;
 
     bool success { true };
@@ -208,7 +208,7 @@ bool Dac38J84::isLocked(bool verbose)
 
     std::cout << std::endl;
     if ( success )
-        std::cout << "Success! Dac38J84 is locked." << std::endl; 
+        std::cout << "Success! " << ModuleName << " is locked." << std::endl; 
     else
         std::cout << "Error! Dac38J84 is not locked." << std::endl;
 

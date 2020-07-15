@@ -17,12 +17,12 @@ JesdRx::JesdRx(Path r)
     resetGTsCmd        ( ICommand::create( root->findByName("ResetRxGTs") ) ), 
     numLanes           ( enableReg->getSizeBits() )
 {
-    std::cout << "JesdRx object created (number of lanes = " << numLanes << ")" << std::endl;
+    std::cout << ModuleName << " object created (number of lanes = " << numLanes << ")" << std::endl;
 }
 
 bool JesdRx::isLocked(bool verbose) const
 {
-    std::cout << "Checking is JesdRx is locked:" << std::endl;
+    std::cout << "Checking if " << ModuleName << " is locked:" << std::endl;
     std::cout << "----------------------------------" << std::endl;
 
     bool success { true };
@@ -65,9 +65,9 @@ bool JesdRx::isLocked(bool verbose) const
 
     std::cout << std::endl;
     if ( success )
-        std::cout << "Success! JedRx is locked!" << std::endl;
+        std::cout << "Success! " << ModuleName << " is locked!" << std::endl;
     else
-        std::cout << "Error! JedRx is not locked!" << std::endl;
+        std::cout << "Error! " << ModuleName << " is not locked!" << std::endl;
 
     std::cout << "----------------------------------" << std::endl;
     std::cout << std::endl;

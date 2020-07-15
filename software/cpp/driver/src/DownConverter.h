@@ -5,6 +5,7 @@
 #include <yaml-cpp/yaml.h>
 #include <cpsw_api_user.h>
 
+#include "CpswTopPaths.h"
 #include "JesdRx.h"
 #include "Lmk04828.h"
 
@@ -18,11 +19,12 @@ public:
     bool isInited();
 
 private:
+    static const std::string ModuleName;
     static const std::string JesdTopModuleName;
-    static const std::string AmcTopModuleName;
+
     Path       root;
-    Path       jesdRoot;
     Path       amcRoot;
+    Path       jesdRoot;
 
     // Devices
     JesdRx     jesdRx;
