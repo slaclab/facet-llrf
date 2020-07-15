@@ -5,6 +5,7 @@
 #include <cpsw_api_user.h>
 
 #include "helpers.h"
+#include "Logger.h"
 
 class JesdRx
 {
@@ -15,7 +16,7 @@ public:
     uint32_t getEnable() const;
     void     clearErrors() const;
     void     resetGTs() const;
-    bool     isLocked(bool verbose = false) const;
+    bool     isLocked();
 
 private:
     static const std::string ModuleName;
@@ -32,6 +33,7 @@ private:
     Command     clearErrorsCmd;
     Command     resetGTsCmd;
     std::size_t numLanes;
+    Logger      log;
 };
 
 #endif

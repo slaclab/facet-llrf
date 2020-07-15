@@ -15,15 +15,16 @@ JesdRx::JesdRx(Path r)
     alignErrReg        ( IScalVal_RO::create( root->findByName("AlignErr") ) ),
     clearErrorsCmd     ( ICommand::create( root->findByName("ClearRxErrors") ) ), 
     resetGTsCmd        ( ICommand::create( root->findByName("ResetRxGTs") ) ), 
-    numLanes           ( enableReg->getSizeBits() )
+    numLanes           ( enableReg->getSizeBits() ),
+    log                ( ModuleName.c_str() )
 {
-    std::cout << ModuleName << " object created (number of lanes = " << numLanes << ")" << std::endl;
+    log(LoggerLevel::Debug) << "Object created. Number of lanes = " + to_string(numLanes);
 }
 
-bool JesdRx::isLocked(bool verbose) const
+bool JesdRx::isLocked()
 {
-    std::cout << "Checking if " << ModuleName << " is locked:" << std::endl;
-    std::cout << "----------------------------------" << std::endl;
+    log(LoggerLevel::Debug) << "Checking lock status:";
+    log(LoggerLevel::Debug) << "----------------------------------";
 
     bool success { true };
 
@@ -31,46 +32,44 @@ bool JesdRx::isLocked(bool verbose) const
     uint32_t sysRefPeriodMin, sysRefPeriodMax;
     sysRefPeriodMinReg->getVal(&sysRefPeriodMin);
     sysRefPeriodMaxReg->getVal(&sysRefPeriodMax);
-    std::cout << "SysRefPeriodMin = " << sysRefPeriodMin << std::endl;
-    std::cout << "SysRefPeriodMax = " << sysRefPeriodMax << std::endl;
+    log(LoggerLevel::Debug) << "SysRefPeriodMin = " + to_string(sysRefPeriodMin);
+    log(LoggerLevel::Debug) << "SysRefPeriodMax = " + to_string(sysRefPeriodMax);
     success = (sysRefPeriodMin == sysRefPeriodMax);
 
     // Check that all the enabled lanes have DataValid
     // - Get the enable mask
     uint32_t enable;
     enableReg->getVal(&enable);
-    std::cout << "Enable = " << enable << std::endl;
+    log(LoggerLevel::Debug) << "Enable = " + to_string(enable);
     // - Get the DataValid values
     std::vector<uint32_t> vec(numLanes);
     dataValidReg->getVal(vec.data(), vec.size());
-    printArray(dataValidReg->getName(), vec);
+    log(LoggerLevel::Debug) << vec2str(dataValidReg->getName(), vec);
     // - Finally, compare the DataValid (converted to word) and enable mask
     success &= ( vec2word(vec) == enable );
 
     // Check that the PositionErr are all zeros
     positionErrReg->getVal(vec.data(), vec.size());
-    printArray(positionErrReg->getName(), vec);
+    log(LoggerLevel::Debug) << vec2str(positionErrReg->getName(), vec);
     success &= allZeros(vec);
 
     // Check that the AlignErr are all zeros
     alignErrReg->getVal(vec.data(), vec.size());
-    printArray(alignErrReg->getName(), vec);
+    log(LoggerLevel::Debug) << vec2str(alignErrReg->getName(), vec);
     success &= allZeros(vec);
 
     // Check that the status valid counters lower or equal than 4
     statusValidCntReg->getVal(vec.data(), vec.size());
-    printArray(statusValidCntReg->getName(), vec);
+    log(LoggerLevel::Debug) << vec2str(statusValidCntReg->getName(), vec);
     uint32_t max = *(std::max_element(vec.begin(), vec.end()));
     success &= ( max <= 4 );
 
-    std::cout << std::endl;
     if ( success )
-        std::cout << "Success! " << ModuleName << " is locked!" << std::endl;
+        log(LoggerLevel::Debug) << "Is locked!";
     else
-        std::cout << "Error! " << ModuleName << " is not locked!" << std::endl;
+        log(LoggerLevel::Error) <<  "Is not locked!";
 
-    std::cout << "----------------------------------" << std::endl;
-    std::cout << std::endl;
+    log(LoggerLevel::Debug) << "----------------------------------";
 
     return success;
 }
