@@ -2,6 +2,7 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include "Gen2UpConverter.h"
 #include "helpers.h"
 
@@ -99,8 +100,17 @@ int main(int argc, char **argv)
     std::cout << "Succeed!" << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Reading demod value:" << std::endl;
-    printRegValue(root->findByName("/mmio/AppTop/AppCore/Sysgen/LlrfDemod/amp[9]"));
-
+    std::cout << "Reading demod values:" << std::endl;
+    std::cout << "-----------------------" << std::endl;
+    std::string regBase("/mmio/AppTop/AppCore/Sysgen/LlrfDemod/amp[");
+    for (std::size_t i {6}; i <= 9; ++i)
+    {
+        std::stringstream reg;
+        reg.str("");
+        reg << regBase << i << "]";
+        printRegValue(root->findByName(reg.str().c_str()));
+    }
+    std::cout << "-----------------------" << std::endl;
+    std::cout << std::endl;
     return 0;
 }
