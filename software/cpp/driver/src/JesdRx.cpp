@@ -65,9 +65,9 @@ bool JesdRx::isLocked()
     success &= ( max <= 4 );
 
     if ( success )
-        log(LoggerLevel::Debug) << "Is locked!";
+        log(LoggerLevel::Debug) << "It is locked!";
     else
-        log(LoggerLevel::Error) <<  "Is not locked!";
+        log(LoggerLevel::Error) <<  "It is not locked!";
 
     log(LoggerLevel::Debug) << "----------------------------------";
 
