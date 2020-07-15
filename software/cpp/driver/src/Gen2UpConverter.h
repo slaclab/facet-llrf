@@ -10,6 +10,7 @@
 #include "JesdTx.h"
 #include "Lmk04828.h"
 #include "Dac38J84.h"
+#include "Logger.h"
 
 class Gen2UpConverter
 {
@@ -34,6 +35,9 @@ private:
 
     // Local commands
     Command    initAmcCardCmd;
+
+    // Logger
+    Logger     log;
 };
 
 #endif
