@@ -1,16 +1,25 @@
 #ifndef _JESDTX_H_
 #define _JESDTX_H_
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <cpsw_api_user.h>
 
 #include "helpers.h"
 #include "Logger.h"
 
-class JesdTx
+class IJesdTx;
+
+typedef boost::shared_ptr<IJesdTx> JesdTx;
+
+class IJesdTx
 {
 public:
-    JesdTx(Path r);
+    IJesdTx(Path p);
 
+    // Factory method, which returns a smart pointer
+    static JesdTx create(Path p);
+    
     void setEnable(uint32_t enable) const;
     uint32_t getEnable() const;
     void clearErrors() const;

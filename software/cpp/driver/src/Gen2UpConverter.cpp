@@ -8,7 +8,7 @@ Gen2UpConverter::Gen2UpConverter(Path p)
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay1.c_str() ) ),
     jesdRx         ( IJesdRx::create(jesdRoot) ),
-    jesdTx         ( jesdRoot ),
+    jesdTx         ( IJesdTx::create(jesdRoot) ),
     lmk            ( root ),
     dac            ( root ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
@@ -32,15 +32,15 @@ bool Gen2UpConverter::init()
         // - Read current JesdRx/Tx enabled lanes
         uint32_t rxEn, txEn;
         rxEn = jesdRx->getEnable();
-        txEn = jesdTx.getEnable();
+        txEn = jesdTx->getEnable();
         // - Disable all JesdRx/Tx lanes
         jesdRx->setEnable(0);
-        jesdTx.setEnable(0);
+        jesdTx->setEnable(0);
         // - Init DAC
         dac.init();
         // - Reset JesdRx/Tx GTs
         jesdRx->resetGTs();
-        jesdTx.resetGTs();
+        jesdTx->resetGTs();
 
         sleep(1);
 
@@ -48,7 +48,7 @@ bool Gen2UpConverter::init()
         jesdRx->clearErrors();
         // - Restore JesdRx/Tx enabled lanes
         jesdRx->setEnable(rxEn);
-        jesdTx.setEnable(txEn);
+        jesdTx->setEnable(txEn);
 
         sleep(2);
 
@@ -58,7 +58,7 @@ bool Gen2UpConverter::init()
         dac.ncoSync();
         dac.clearAlarms();
         // - Clear JesdTx errors
-        jesdTx.clearErrors();
+        jesdTx->clearErrors();
 
         sleep(2);
 
@@ -66,7 +66,7 @@ bool Gen2UpConverter::init()
         // - Check DAC errors
         success = dac.isLocked();
         // - Check JesdTx errors
-        success &= jesdTx.isLocked();
+        success &= jesdTx->isLocked();
         // - Check JesdRx errors
         success &= jesdRx->isLocked();
 
@@ -108,7 +108,7 @@ bool Gen2UpConverter::isInited()
     success &= jesdRx->isLocked();
 
     // Check if JesdTx is locked
-    success &= jesdTx.isLocked();
+    success &= jesdTx->isLocked();
 
     if ( success )
         log(LoggerLevel::Debug) << "It is locked!";

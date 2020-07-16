@@ -1,11 +1,19 @@
 #include "JesdTx.h"
 
-const std::string JesdTx::ModuleName  = "JesdTx";
-const std::size_t JesdTx::MaxNumLanes = 8;
+const std::string IJesdTx::ModuleName  = "JesdTx";
+const std::size_t IJesdTx::MaxNumLanes = 8;
 
-JesdTx::JesdTx(Path r)
+JesdTx IJesdTx::create(Path p)
+{
+    if(!p)
+        throw std::runtime_error(ModuleName + " : The root Path is empty");
+
+    return boost::make_shared<IJesdTx>(p);
+}
+
+IJesdTx::IJesdTx(Path p)
 :
-    root               ( r->findByName( ModuleName.c_str() ) ),
+    root               ( p->findByName( ModuleName.c_str() ) ),
     enableReg          ( IScalVal::create( root->findByName("Enable") ) ),
     dataValidReg       ( IScalVal_RO::create( root->findByName("DataValid") ) ),
     statusValidCntReg  ( IScalVal_RO::create( root->findByName("StatusValidCnt") ) ),
@@ -19,7 +27,7 @@ JesdTx::JesdTx(Path r)
     log(LoggerLevel::Debug) << "Object created. Number of lanes = " + to_string(numLanes);
 }
 
-bool JesdTx::isLocked()
+bool IJesdTx::isLocked()
 {
     log(LoggerLevel::Debug) << "Checking lock status:";
     log(LoggerLevel::Debug) << "----------------------------------";
@@ -61,25 +69,25 @@ bool JesdTx::isLocked()
     return success;
 }
 
-void JesdTx::setEnable(uint32_t enable) const
+void IJesdTx::setEnable(uint32_t enable) const
 {
     enableReg->setVal(&enable);
 }
 
-uint32_t JesdTx::getEnable() const
+uint32_t IJesdTx::getEnable() const
 {
     uint32_t u32;
     enableReg->getVal(&u32);
     return u32;
 }
 
-void JesdTx::clearErrors() const
+void IJesdTx::clearErrors() const
 {
     // We will use the Command defined in YAML
     clearErrorsCmd->execute();
 }
 
-void JesdTx::resetGTs() const
+void IJesdTx::resetGTs() const
 {
     // We will use the Command defined in YAML
     resetGTsCmd->execute();
