@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Gen2UpConverter.h"
 #include "helpers.h"
+#include "Logger.h"
 
 void usage(const char* name)
 {
@@ -80,24 +81,32 @@ int main(int argc, char **argv)
 
     std::cout << std::endl;
 
-    std::cout << "Using driver to initilize the Gen2UpConverter card..." << std::endl;
+    // Set logger level to "Debug"
+    Logger::setLevel(LoggerLevel::Debug);
 
+    // Create a Gen2UpConverter object
+    std::cout << "Creating a Gen2UpConverter object..." << std::endl;
     Gen2UpConverter amc(root);
+    std::cout << std::endl;
 
+    std::cout << "Initilizating the Gen2UpConverter object..." << std::endl;
+    // Initilize it
     bool success;
     if ( success =  amc.init() )
     {
         success &= amc.isInited();
     }
+    std::cout << std::endl;
 
+    // Check if the initializtion succeed
     std::cout << std::endl;
     if ( !success )
     {
-        std::cerr << "Failed!" << std::endl;
+        std::cerr << "Initialization failed!" << std::endl;
         return 1;
     }
 
-    std::cout << "Succeed!" << std::endl;
+    std::cout << "Initialization succeed!" << std::endl;
     std::cout << std::endl;
 
     std::cout << "Reading demod values:" << std::endl;

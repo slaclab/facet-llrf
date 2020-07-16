@@ -79,18 +79,28 @@ int main(int argc, char **argv)
 
     std::cout << std::endl;
 
+    // Set logger level to "Debug"
+    Logger::setLevel(LoggerLevel::Debug);
+
+    // Create Gen2Llrf object
+    std::cout << "Creating a Gen2Llrf object..." << std::endl;
     Gen2Llrf llrf(root);
+    std::cout << std::endl;
 
+    // Initilize it
+    std::cout << "Initilizating the Gen2Llrf object..." << std::endl;
     bool success { llrf.init() };
+    std::cout << std::endl;
 
+    // Check if the initilization succeed
     std::cout << std::endl;
     if ( !success )
     {
-        std::cerr << "Failed!" << std::endl;
+        std::cerr << "Initilization failed!" << std::endl;
         return 1;
     }
 
-    std::cout << "Succeed!" << std::endl;
+    std::cout << "Initilization succeed!" << std::endl;
     std::cout << std::endl;
 
     return 0;
