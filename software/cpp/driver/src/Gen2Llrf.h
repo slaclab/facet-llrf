@@ -35,6 +35,10 @@ public:
     // Check is both cards are initilized
     bool isInited() const;
 
+    // Get copies of the Down and Up converter objects
+    DownConverter   getDownConv() const;
+    Gen2UpConverter getUpConv() const;
+
 private:
     static const std::string ModuleName;
 

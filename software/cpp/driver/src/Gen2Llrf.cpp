@@ -51,3 +51,13 @@ bool IGen2Llrf::isUpConvInited() const
 {
     return upConv->isInited();
 }
+
+DownConverter IGen2Llrf::getDownConv() const
+{
+   return downConv;
+}
+
+Gen2UpConverter IGen2Llrf::getUpConv() const
+{
+    return upConv;
+}
