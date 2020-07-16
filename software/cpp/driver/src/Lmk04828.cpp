@@ -1,17 +1,25 @@
 #include "Lmk04828.h"
 
-const std::string Lmk04828::ModuleName = "Lmk04828";
+const std::string ILmk04828::ModuleName = "Lmk04828";
 
-Lmk04828::Lmk04828(Path r)
+Lmk04828 ILmk04828::create(Path p)
+{
+    if(!p)
+        throw std::runtime_error(ModuleName + " : The root Path is empty");
+
+    return boost::make_shared<ILmk04828>(p);
+}
+
+ILmk04828::ILmk04828(Path p)
 :
-    root            ( r->findByName( ModuleName.c_str() ) ),
+    root            ( p->findByName( ModuleName.c_str() ) ),
     pwrDwnSysRefCmd ( ICommand::create( root->findByName("PwrDwnSysRef") ) ),
     log             ( ModuleName.c_str() )
 {
     log(LoggerLevel::Debug) << "Object created";
 }
 
-void Lmk04828::pwrDwnSysRef()
+void ILmk04828::pwrDwnSysRef()
 {
     // We will use the Command defined in YAML
     pwrDwnSysRefCmd->execute();

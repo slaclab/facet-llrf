@@ -3,15 +3,24 @@
 
 #include <string>
 #include <unistd.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <cpsw_api_user.h>
 
 #include "helpers.h"
 #include "Logger.h"
 
-class Lmk04828
+class ILmk04828;
+
+typedef boost::shared_ptr<ILmk04828> Lmk04828;
+
+class ILmk04828
 {
 public:
-    Lmk04828(Path r);
+    ILmk04828(Path p);
+
+    // Factory method, which returns a smart pointer
+    static Lmk04828 create(Path p);
 
     void pwrDwnSysRef();
 

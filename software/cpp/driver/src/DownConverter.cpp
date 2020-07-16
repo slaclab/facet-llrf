@@ -8,7 +8,7 @@ DownConverter::DownConverter(Path p)
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay0.c_str() ) ),
     jesdRx         ( IJesdRx::create(jesdRoot) ),
-    lmk            ( root ),
+    lmk            ( ILmk04828::create(root) ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
     log            ( ModuleName.c_str() )
 {
@@ -28,7 +28,7 @@ bool DownConverter::init()
         log(LoggerLevel::Debug) << "===========================";
 
         // - Power down Lmk sys ref
-        lmk.pwrDwnSysRef();
+        lmk->pwrDwnSysRef();
         // - Reset JesdRx GTs
         jesdRx->resetGTs();
         // - Init AMC card

@@ -9,7 +9,7 @@ Gen2UpConverter::Gen2UpConverter(Path p)
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay1.c_str() ) ),
     jesdRx         ( IJesdRx::create(jesdRoot) ),
     jesdTx         ( IJesdTx::create(jesdRoot) ),
-    lmk            ( root ),
+    lmk            ( ILmk04828::create(root) ),
     dac            ( root ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
     log            ( ModuleName.c_str() )
