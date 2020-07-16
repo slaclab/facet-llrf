@@ -84,12 +84,12 @@ int main(int argc, char **argv)
 
     // Create Gen2Llrf object
     std::cout << "Creating a Gen2Llrf object..." << std::endl;
-    Gen2Llrf llrf(root);
+    Gen2Llrf llrf { IGen2Llrf::create(root) };
     std::cout << std::endl;
 
     // Initilize it
     std::cout << "Initilizating the Gen2Llrf object..." << std::endl;
-    bool success { llrf.init() };
+    bool success { llrf->init() };
     std::cout << std::endl;
 
     // Check if the initilization succeed

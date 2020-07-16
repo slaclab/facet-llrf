@@ -1,11 +1,19 @@
 #include <unistd.h>
 #include "Gen2Llrf.h"
 
-const std::string Gen2Llrf::ModuleName = "Gen2Llrf";
+const std::string IGen2Llrf::ModuleName = "Gen2Llrf";
 
-Gen2Llrf::Gen2Llrf(Path r)
+Gen2Llrf IGen2Llrf::create(Path p)
+{
+    if(!p)
+        throw std::runtime_error(ModuleName + " : The root Path is empty");
+
+    return boost::make_shared<IGen2Llrf>(p);
+}
+
+IGen2Llrf::IGen2Llrf(Path p)
 :
-    root     ( r ),
+    root     ( p ),
     upConv   ( IGen2UpConverter::create(root) ),
     downConv ( IDownConverter::create(root) ),
     log      ( ModuleName.c_str() )
@@ -13,7 +21,7 @@ Gen2Llrf::Gen2Llrf(Path r)
     log(LoggerLevel::Debug) << "Object created";
 }
 
-bool Gen2Llrf::init()
+bool IGen2Llrf::init()
 {
     log(LoggerLevel::Debug) << "Initilizing...";
 
