@@ -3,15 +3,24 @@
 
 #include <string>
 #include <unistd.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <cpsw_api_user.h>
 
 #include "helpers.h"
 #include "Logger.h"
 
-class Dac38J84
+class IDac38J84;
+
+typedef boost::shared_ptr<IDac38J84> Dac38J84;
+
+class IDac38J84
 {
 public:
-    Dac38J84(Path r);
+    IDac38J84(Path p);
+
+    // Factory method, which returns a smart pointer
+    static Dac38J84 create(Path p);
 
     void init();
     void initDac();

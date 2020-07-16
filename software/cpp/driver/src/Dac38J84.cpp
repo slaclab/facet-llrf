@@ -1,11 +1,19 @@
 #include "Dac38J84.h"
 
-const std::string Dac38J84::ModuleName = "Dac38J84";
-const std::size_t Dac38J84::MaxNumLanes = 8;
+const std::string IDac38J84::ModuleName = "Dac38J84";
+const std::size_t IDac38J84::MaxNumLanes = 8;
 
-Dac38J84::Dac38J84(Path r)
+Dac38J84 IDac38J84::create(Path p)
+{
+    if(!p)
+        throw std::runtime_error(ModuleName + " : The root Path is empty");
+
+    return boost::make_shared<IDac38J84>(p);
+}
+
+IDac38J84::IDac38J84(Path p)
 :
-    root                   ( r->findByName( ModuleName.c_str() ) ),
+    root                   ( p->findByName( ModuleName.c_str() ) ),
     enableTxReg            ( IScalVal::create( root->findByName("EnableTx") )  ),
     clearAlarmsCmd         ( ICommand::create( root->findByName("ClearAlarms") ) ),
     ncoSyncCmd             ( ICommand::create( root->findByName("NcoSync") ) ),
@@ -30,7 +38,7 @@ Dac38J84::Dac38J84(Path r)
     log(LoggerLevel::Debug) << "Object created. Number of lanes = " + to_string(numLanes);
 }
 
-void Dac38J84::init()
+void IDac38J84::init()
 {
     log(LoggerLevel::Debug) << "Initilizing...";
 
@@ -128,25 +136,25 @@ void Dac38J84::init()
     log(LoggerLevel::Debug) << "Done!";
 }
 
-void Dac38J84::initDac()
+void IDac38J84::initDac()
 {
     // We will use the Command defined in YAML
     initDacCmd->execute();
 }
 
-void Dac38J84::ncoSync()
+void IDac38J84::ncoSync()
 {
     // We will use the Command defined in YAML
     ncoSyncCmd->execute();
 }
 
-void Dac38J84::clearAlarms()
+void IDac38J84::clearAlarms()
 {
     // We will use the Command defined in YAML
     clearAlarmsCmd->execute();
 }
 
-bool Dac38J84::isLocked(bool verbose)
+bool IDac38J84::isLocked(bool verbose)
 {
     log(LoggerLevel::Debug) << "Checking lock status:";
     log(LoggerLevel::Debug) << "----------------------------------";

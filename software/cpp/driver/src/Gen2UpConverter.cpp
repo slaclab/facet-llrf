@@ -10,7 +10,7 @@ Gen2UpConverter::Gen2UpConverter(Path p)
     jesdRx         ( IJesdRx::create(jesdRoot) ),
     jesdTx         ( IJesdTx::create(jesdRoot) ),
     lmk            ( ILmk04828::create(root) ),
-    dac            ( root ),
+    dac            ( IDac38J84::create(root) ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
     log            ( ModuleName.c_str() )
 {
@@ -37,7 +37,7 @@ bool Gen2UpConverter::init()
         jesdRx->setEnable(0);
         jesdTx->setEnable(0);
         // - Init DAC
-        dac.init();
+        dac->init();
         // - Reset JesdRx/Tx GTs
         jesdRx->resetGTs();
         jesdTx->resetGTs();
@@ -53,10 +53,10 @@ bool Gen2UpConverter::init()
         sleep(2);
 
         // - Init Dac 
-        dac.init();
-        dac.clearAlarms();
-        dac.ncoSync();
-        dac.clearAlarms();
+        dac->init();
+        dac->clearAlarms();
+        dac->ncoSync();
+        dac->clearAlarms();
         // - Clear JesdTx errors
         jesdTx->clearErrors();
 
@@ -64,7 +64,7 @@ bool Gen2UpConverter::init()
 
         // JESD Link Health Checking
         // - Check DAC errors
-        success = dac.isLocked();
+        success = dac->isLocked();
         // - Check JesdTx errors
         success &= jesdTx->isLocked();
         // - Check JesdRx errors
@@ -102,7 +102,7 @@ bool Gen2UpConverter::isInited()
     bool success { true };
 
     // Check if DAC is locked
-    success &= dac.isLocked();
+    success &= dac->isLocked();
 
     // Check is JesdRx is locked
     success &= jesdRx->isLocked();
