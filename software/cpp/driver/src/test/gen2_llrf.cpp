@@ -89,7 +89,11 @@ int main(int argc, char **argv)
 
     // Initilize it
     std::cout << "Initilizating the Gen2Llrf object..." << std::endl;
-    bool success { llrf->init() };
+    bool success;
+    if ( success =  llrf->init() )
+    {
+        success &= llrf->isInited();
+    }
     std::cout << std::endl;
 
     // Check if the initilization succeed

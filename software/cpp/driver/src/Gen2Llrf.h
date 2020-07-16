@@ -23,14 +23,22 @@ public:
     // Factory method, which returns a smart pointer
     static Gen2Llrf create(Path p);
 
-    bool init();
+    // Call initilization sequence of both cards
+    bool init() const;
 
-    bool isInited();
+    // Check if the down converter card is initilized
+    bool isDownConvInited() const;
+
+    // Check if the up converter card is initilized
+    bool isUpConvInited() const;
+
+    // Check is both cards are initilized
+    bool isInited() const;
 
 private:
     static const std::string ModuleName;
 
-    Path       root;
+    Path            root;
 
     // Devices
     Gen2UpConverter upConv;

@@ -21,7 +21,7 @@ IGen2Llrf::IGen2Llrf(Path p)
     log->log(LoggerLevel::Debug, "Object created");
 }
 
-bool IGen2Llrf::init()
+bool IGen2Llrf::init() const
 {
     log->log(LoggerLevel::Debug, "Initilizing...");
 
@@ -35,4 +35,19 @@ bool IGen2Llrf::init()
          log->log(LoggerLevel::Error, "Initilization failed!");
 
     return success;
+}
+
+bool IGen2Llrf::isInited() const
+{
+    return ( downConv->isInited() & upConv->isInited() );
+}
+
+bool IGen2Llrf::isDownConvInited() const
+{
+    return downConv->isInited();
+}
+
+bool IGen2Llrf::isUpConvInited() const
+{
+    return upConv->isInited();
 }
