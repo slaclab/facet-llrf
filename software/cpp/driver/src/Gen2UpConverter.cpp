@@ -31,7 +31,7 @@ bool IGen2UpConverter::init()
 
     // Initilizaztion sequence
     bool success;
-    std::size_t maxRetries { 10 };
+    std::size_t maxRetries { 5 };
     for (std::size_t i {1}; i <= maxRetries; ++i)
     {
         log->log(LoggerLevel::Debug, "Initilization try # " + to_string(i) + ":");
