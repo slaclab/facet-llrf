@@ -7,6 +7,7 @@
 
 #include "Gen2UpConverter.h"
 #include "DownConverter.h"
+#include "Logger.h"
 
 class Gen2Llrf
 {
@@ -18,11 +19,16 @@ public:
     bool isInited();
 
 private:
+    static const std::string ModuleName;
+
     Path       root;
 
     // Devices
     Gen2UpConverter upConv;
     DownConverter   downConv;
+
+    // Logger
+    Logger          log;
 };
 
 #endif

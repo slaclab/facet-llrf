@@ -1,27 +1,30 @@
 #include <unistd.h>
 #include "Gen2Llrf.h"
 
+const std::string Gen2Llrf::ModuleName = "Gen2Llrf";
+
 Gen2Llrf::Gen2Llrf(Path r)
 :
     root     ( r ),
     upConv   ( root ),
-    downConv ( root )
+    downConv ( root ),
+    log      ( ModuleName.c_str() )
 {
-    std::cout << "Gen2 LLRF object created" << std::endl;
+    log(LoggerLevel::Debug) << "Object created";
 }
 
 bool Gen2Llrf::init()
 {
-    std::cout << "Executing Gen2 LLRF init sequence..." << std::endl;
+    log(LoggerLevel::Debug) << "Initilizing...";
 
     // Initilizaztion sequence
     bool success = downConv.init();
     success &= upConv.init();
 
-
     if ( success )
-        std::cout << "Initilization succeed!" << std::endl;
+        log(LoggerLevel::Debug) << "Initilization succeed!";
     else
-        std::cout << "Initilization failed!" << std::endl;
+         log(LoggerLevel::Error) << "Initilization failed!";
+
     return success;
 }
