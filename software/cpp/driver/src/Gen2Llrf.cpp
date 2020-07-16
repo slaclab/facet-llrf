@@ -16,23 +16,23 @@ IGen2Llrf::IGen2Llrf(Path p)
     root     ( p ),
     upConv   ( IGen2UpConverter::create(root) ),
     downConv ( IDownConverter::create(root) ),
-    log      ( ModuleName.c_str() )
+    log      ( ILogger::create(ModuleName.c_str()) )
 {
-    log(LoggerLevel::Debug) << "Object created";
+    log->log(LoggerLevel::Debug, "Object created");
 }
 
 bool IGen2Llrf::init()
 {
-    log(LoggerLevel::Debug) << "Initilizing...";
+    log->log(LoggerLevel::Debug, "Initilizing...");
 
     // Initilizaztion sequence
     bool success = downConv->init();
     success &= upConv->init();
 
     if ( success )
-        log(LoggerLevel::Debug) << "Initilization succeed!";
+        log->log(LoggerLevel::Debug, "Initilization succeed!");
     else
-         log(LoggerLevel::Error) << "Initilization failed!";
+         log->log(LoggerLevel::Error, "Initilization failed!");
 
     return success;
 }

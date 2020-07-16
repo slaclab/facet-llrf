@@ -14,9 +14,9 @@ ILmk04828::ILmk04828(Path p)
 :
     root            ( p->findByName( ModuleName.c_str() ) ),
     pwrDwnSysRefCmd ( ICommand::create( root->findByName("PwrDwnSysRef") ) ),
-    log             ( ModuleName.c_str() )
+    log             ( ILogger::create(ModuleName.c_str()) )
 {
-    log(LoggerLevel::Debug) << "Object created";
+    log->log(LoggerLevel::Debug, "Object created");
 }
 
 void ILmk04828::pwrDwnSysRef()

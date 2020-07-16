@@ -33,14 +33,14 @@ IDac38J84::IDac38J84(Path p)
     frameAlignErrReg       ( IScalVal_RO::create( root->findByName("FrameAlignErr") ) ),
     multiFrameAlignErrReg  ( IScalVal_RO::create( root->findByName("MultiFrameAlignErr") ) ),
     numLanes               ( linkErrCntReg->getNelms() ),
-    log                    ( ModuleName.c_str() )
+    log                    ( ILogger::create(ModuleName.c_str()) )
 {
-    log(LoggerLevel::Debug) << "Object created. Number of lanes = " + to_string(numLanes);
+    log->log(LoggerLevel::Debug, "Object created. Number of lanes = " + to_string(numLanes));
 }
 
 void IDac38J84::init()
 {
-    log(LoggerLevel::Debug) << "Initilizing...";
+    log->log(LoggerLevel::Debug, "Initilizing...");
 
     enableTxReg->setVal(0ul);
     usleep(10000);
@@ -133,7 +133,7 @@ void IDac38J84::init()
     enableTxReg->setVal(1ul);
     usleep(10000);
 
-    log(LoggerLevel::Debug) << "Done!";
+    log->log(LoggerLevel::Debug, "Done!");
 }
 
 void IDac38J84::initDac()
@@ -156,71 +156,71 @@ void IDac38J84::clearAlarms()
 
 bool IDac38J84::isLocked(bool verbose)
 {
-    log(LoggerLevel::Debug) << "Checking lock status:";
-    log(LoggerLevel::Debug) << "----------------------------------";
+    log->log(LoggerLevel::Debug, "Checking lock status:");
+    log->log(LoggerLevel::Debug, "----------------------------------");
 
     bool success { true };
 
     std::vector<uint32_t> vec(numLanes);
 
     linkErrCntReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(linkErrCntReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(linkErrCntReg->getName(), vec));
     success &= allZeros(vec);
 
     readFifoEmptyReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(readFifoEmptyReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(readFifoEmptyReg->getName(), vec));
     success &= allZeros(vec);
 
     readFifoUnderflowReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(readFifoUnderflowReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(readFifoUnderflowReg->getName(), vec));
     success &= allZeros(vec);
 
     readFifoFullReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(readFifoFullReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(readFifoFullReg->getName(), vec));
     success &= allZeros(vec);
 
     readFifoOverflowReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(readFifoOverflowReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(readFifoOverflowReg->getName(), vec));
     success &= allZeros(vec);
 
     dispErrReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(dispErrReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(dispErrReg->getName(), vec));
     success &= allZeros(vec);
 
     notitableErrReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(notitableErrReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(notitableErrReg->getName(), vec));
     success &= allZeros(vec);
 
     codeSyncErrReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(codeSyncErrReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(codeSyncErrReg->getName(), vec));
     success &= allZeros(vec);
 
     firstDataMatchErrReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(firstDataMatchErrReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(firstDataMatchErrReg->getName(), vec));
     success &= allZeros(vec);
 
     elasticBuffOverflowReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(elasticBuffOverflowReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(elasticBuffOverflowReg->getName(), vec));
     success &= allZeros(vec);
 
     linkConfigErrReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(linkConfigErrReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(linkConfigErrReg->getName(), vec));
     success &= allZeros(vec);
 
     frameAlignErrReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(frameAlignErrReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(frameAlignErrReg->getName(), vec));
     success &= allZeros(vec);
 
     multiFrameAlignErrReg->getVal(vec.data(), vec.size());
-    log(LoggerLevel::Debug) << vec2str(multiFrameAlignErrReg->getName(), vec);
+    log->log(LoggerLevel::Debug, vec2str(multiFrameAlignErrReg->getName(), vec));
     success &= allZeros(vec);
 
     if ( success )
-         log(LoggerLevel::Debug) << "It is locked!"; 
+         log->log(LoggerLevel::Debug, "It is locked!");
     else
-         log(LoggerLevel::Error) << "It is not locked!";
+         log->log(LoggerLevel::Error, "It is not locked!");
 
-    log(LoggerLevel::Debug) << "----------------------------------";
+    log->log(LoggerLevel::Debug, "----------------------------------");
 
     // These checks fail at the moment, so let's always return 'true' for now
     //return success;

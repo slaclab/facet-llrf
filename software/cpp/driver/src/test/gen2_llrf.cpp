@@ -80,7 +80,7 @@ int main(int argc, char **argv)
     std::cout << std::endl;
 
     // Set logger level to "Debug"
-    Logger::setLevel(LoggerLevel::Debug);
+    ILogger::setLevel(LoggerLevel::Debug);
 
     // Create Gen2Llrf object
     std::cout << "Creating a Gen2Llrf object..." << std::endl;

@@ -20,22 +20,22 @@ IGen2UpConverter::IGen2UpConverter(Path p)
     lmk            ( ILmk04828::create(root) ),
     dac            ( IDac38J84::create(root) ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
-    log            ( ModuleName.c_str() )
+    log            ( ILogger::create(ModuleName.c_str()) )
 {
-     log(LoggerLevel::Debug) << "Object created";
+     log->log(LoggerLevel::Debug, "Object created");
 }
 
 bool IGen2UpConverter::init()
 {
-    log(LoggerLevel::Debug) << "Initilizing...";
+    log->log(LoggerLevel::Debug, "Initilizing...");
 
     // Initilizaztion sequence
     bool success;
     std::size_t maxRetries { 10 };
     for (std::size_t i {1}; i <= maxRetries; ++i)
     {
-        log(LoggerLevel::Debug) << "Initilization try # " + to_string(i) + ":";
-        log(LoggerLevel::Debug) << "===========================";
+        log->log(LoggerLevel::Debug, "Initilization try # " + to_string(i) + ":");
+        log->log(LoggerLevel::Debug, "===========================");
 
         // - Read current JesdRx/Tx enabled lanes
         uint32_t rxEn, txEn;
@@ -80,32 +80,32 @@ bool IGen2UpConverter::init()
 
        if ( success )
        {
-           log(LoggerLevel::Debug) << "Initilization succeed!";
+           log->log(LoggerLevel::Debug, "Initilization succeed!");
            break;
        }
        else
        {
            if ( i == maxRetries )
            {
-               log(LoggerLevel::Error) << "Initilization failed after " + to_string(maxRetries) + " retries. Aborting!";
+               log->log(LoggerLevel::Error,  "Initilization failed after " + to_string(maxRetries) + " retries. Aborting!");
                break;
            }
            else
            {
-               log(LoggerLevel::Warning) << "Initilization # " + to_string(i) + " failed. Retying...";
+               log->log(LoggerLevel::Warning, "Initilization # " + to_string(i) + " failed. Retying...");
            }
        }
     }
 
-    log(LoggerLevel::Debug) << "===========================";
+    log->log(LoggerLevel::Debug, "===========================");
 
     return success;
 }
 
 bool IGen2UpConverter::isInited()
 {
-    log(LoggerLevel::Debug) << "Checking lock status:";
-    log(LoggerLevel::Debug) << "----------------------------------";
+    log->log(LoggerLevel::Debug, "Checking lock status:");
+    log->log(LoggerLevel::Debug, "----------------------------------");
 
     bool success { true };
 
@@ -119,11 +119,12 @@ bool IGen2UpConverter::isInited()
     success &= jesdTx->isLocked();
 
     if ( success )
-        log(LoggerLevel::Debug) << "It is locked!";
+        log->log(LoggerLevel::Debug, "It is locked!");
     else
-        log(LoggerLevel::Error) << "It is not locked!";
+        log->log(LoggerLevel::Error, "It is not locked!");
 
-    log(LoggerLevel::Debug) << "----------------------------------";
+    log->log(LoggerLevel::Debug, "----------------------------------");
+
 
     return success;
 }

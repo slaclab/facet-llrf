@@ -18,22 +18,22 @@ IDownConverter::IDownConverter(Path p)
     jesdRx         ( IJesdRx::create(jesdRoot) ),
     lmk            ( ILmk04828::create(root) ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
-    log            ( ModuleName.c_str() )
+    log            ( ILogger::create(ModuleName.c_str()) )
 {
-    log(LoggerLevel::Debug) << "Object created";
+    log->log(LoggerLevel::Debug, "Object created");
 }
 
 bool IDownConverter::init()
 {
-    log(LoggerLevel::Debug) << "Initilizating...";
+    log->log(LoggerLevel::Debug, "Initilizating...");
 
     // Initilizaztion sequence
     bool success;
     std::size_t maxRetries { 10 };
     for (std::size_t i {1}; i <= maxRetries; ++i)
     {
-        log(LoggerLevel::Debug) << "Initilization try # " + to_string(i) + ":";
-        log(LoggerLevel::Debug) << "===========================";
+        log->log(LoggerLevel::Debug, "Initilization try # " + to_string(i) + ":");
+        log->log(LoggerLevel::Debug, "===========================");
 
         // - Power down Lmk sys ref
         lmk->pwrDwnSysRef();
@@ -52,42 +52,42 @@ bool IDownConverter::init()
 
        if ( success )
        {
-           log(LoggerLevel::Debug) << "Initilization succeed!";
+           log->log(LoggerLevel::Debug, "Initilization succeed!");
            break;
        }
        else
        {
            if ( i == maxRetries )
            {
-                log(LoggerLevel::Error) << "Initilization failed after " + to_string(maxRetries) + " retries. Aborting!";
+                log->log(LoggerLevel::Error, "Initilization failed after " + to_string(maxRetries) + " retries. Aborting!");
                break;
            }
            else
            {
-               log(LoggerLevel::Warning) << "Initilization # " + to_string(i) + " failed. Retying...";
+               log->log(LoggerLevel::Warning, "Initilization # " + to_string(i) + " failed. Retying...");
            }
        }
     }
 
-    log(LoggerLevel::Debug) << "===========================";
+    log->log(LoggerLevel::Debug, "===========================");
 
     return success;
 }
 
 bool IDownConverter::isInited()
 {
-    log(LoggerLevel::Debug) << "Checking lock status:";
-    log(LoggerLevel::Debug) << "----------------------------------";
+    log->log(LoggerLevel::Debug, "Checking lock status:");
+    log->log(LoggerLevel::Debug, "----------------------------------");
 
     // Check is JesdRx is locked
     bool success { jesdRx->isLocked() };
 
     if ( success )
-        log(LoggerLevel::Debug) << "It is locked!";
+        log->log(LoggerLevel::Debug, "It is locked!");
     else
-        log(LoggerLevel::Error) << "It is not locked!";
+        log->log(LoggerLevel::Error, "It is not locked!");
 
-    log(LoggerLevel::Debug) << "----------------------------------";
+    log->log(LoggerLevel::Debug, "----------------------------------");
 
     return success;
 }

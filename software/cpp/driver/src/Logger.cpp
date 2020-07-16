@@ -1,6 +1,28 @@
 #include "Logger.h"
 
-LoggerLevel Logger::globalLevel = LoggerLevel::Error;
+LoggerLevel ILogger::globalLevel = LoggerLevel::Error;
+
+Logger ILogger::create(const std::string& n)
+{
+    if(n.empty())
+        throw std::runtime_error("Logger created without a name!");
+
+    return boost::make_shared<ILogger>(n);
+}
+
+ILogger::ILogger(const std::string& n)
+:
+    name(n)
+{
+}
+
+void ILogger::log(const LoggerLevel& lvl, const std::string& msg)
+{
+    // Filter the message depending on the message and global log levels
+    if (lvl >= globalLevel)
+        std::cout << lvl << name << " : " << msg << std::endl;
+}
+
 
 bool operator<(LoggerLevel lhs, LoggerLevel rhs)
 {
@@ -51,16 +73,3 @@ std::ostream& operator<<(std::ostream& os, LoggerLevel ll)
 }
 
 
-Logger::Logger(const std::string& n) 
-: 
-    name(n), 
-    level(LoggerLevel::Error) 
-{
-}
-
-Logger& Logger::operator()(const LoggerLevel& l)
-{
-    if (l != LoggerLevel::None)
-        level = l;
-    return *this;
-}
