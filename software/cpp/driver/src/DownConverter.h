@@ -2,6 +2,8 @@
 #define _DOWNCONVERTER_H_
 
 #include <iostream>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <yaml-cpp/yaml.h>
 #include <cpsw_api_user.h>
 
@@ -10,10 +12,17 @@
 #include "Lmk04828.h"
 #include "Logger.h"
 
-class DownConverter
+class IDownConverter;
+
+typedef boost::shared_ptr<IDownConverter> DownConverter;
+
+class IDownConverter
 {
 public: 
-    DownConverter(Path p);
+    IDownConverter(Path p);
+
+    // Factory method, which returns a smart pointer
+    static DownConverter create(Path p);
 
     bool init();
 

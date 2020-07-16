@@ -1,9 +1,17 @@
 #include <unistd.h>
 #include "DownConverter.h"
 
-const std::string DownConverter::ModuleName = "AmcMrLlrfDownConvert";
+const std::string IDownConverter::ModuleName = "AmcMrLlrfDownConvert";
 
-DownConverter::DownConverter(Path p)
+DownConverter IDownConverter::create(Path p)
+{
+    if(!p)
+        throw std::runtime_error(ModuleName + " : The root Path is empty");
+
+    return boost::make_shared<IDownConverter>(p);
+}
+
+IDownConverter::IDownConverter(Path p)
 :
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay0.c_str() ) ),
@@ -15,7 +23,7 @@ DownConverter::DownConverter(Path p)
     log(LoggerLevel::Debug) << "Object created";
 }
 
-bool DownConverter::init()
+bool IDownConverter::init()
 {
     log(LoggerLevel::Debug) << "Initilizating...";
 
@@ -66,7 +74,7 @@ bool DownConverter::init()
     return success;
 }
 
-bool DownConverter::isInited()
+bool IDownConverter::isInited()
 {
     log(LoggerLevel::Debug) << "Checking lock status:";
     log(LoggerLevel::Debug) << "----------------------------------";
