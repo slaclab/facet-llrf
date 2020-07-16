@@ -6,7 +6,7 @@ const std::string Gen2Llrf::ModuleName = "Gen2Llrf";
 Gen2Llrf::Gen2Llrf(Path r)
 :
     root     ( r ),
-    upConv   ( root ),
+    upConv   ( IGen2UpConverter::create(root) ),
     downConv ( root ),
     log      ( ModuleName.c_str() )
 {
@@ -19,7 +19,7 @@ bool Gen2Llrf::init()
 
     // Initilizaztion sequence
     bool success = downConv.init();
-    success &= upConv.init();
+    success &= upConv->init();
 
     if ( success )
         log(LoggerLevel::Debug) << "Initilization succeed!";

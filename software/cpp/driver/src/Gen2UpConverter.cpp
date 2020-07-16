@@ -1,9 +1,17 @@
 #include <unistd.h>
 #include "Gen2UpConverter.h"
 
-const std::string Gen2UpConverter::ModuleName = "AmcMrLlrfGen2UpConvert";
+const std::string IGen2UpConverter::ModuleName = "AmcMrLlrfGen2UpConvert";
 
-Gen2UpConverter::Gen2UpConverter(Path p)
+Gen2UpConverter IGen2UpConverter::create(Path p)
+{
+    if(!p)
+        throw std::runtime_error(ModuleName + " : The root Path is empty");
+
+    return boost::make_shared<IGen2UpConverter>(p);
+}
+
+IGen2UpConverter::IGen2UpConverter(Path p)
 :
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay1.c_str() ) ),
@@ -17,7 +25,7 @@ Gen2UpConverter::Gen2UpConverter(Path p)
      log(LoggerLevel::Debug) << "Object created";
 }
 
-bool Gen2UpConverter::init()
+bool IGen2UpConverter::init()
 {
     log(LoggerLevel::Debug) << "Initilizing...";
 
@@ -94,7 +102,7 @@ bool Gen2UpConverter::init()
     return success;
 }
 
-bool Gen2UpConverter::isInited()
+bool IGen2UpConverter::isInited()
 {
     log(LoggerLevel::Debug) << "Checking lock status:";
     log(LoggerLevel::Debug) << "----------------------------------";

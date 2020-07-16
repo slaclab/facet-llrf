@@ -86,15 +86,15 @@ int main(int argc, char **argv)
 
     // Create a Gen2UpConverter object
     std::cout << "Creating a Gen2UpConverter object..." << std::endl;
-    Gen2UpConverter amc(root);
+    Gen2UpConverter amc { IGen2UpConverter::create(root) };
     std::cout << std::endl;
 
     std::cout << "Initilizating the Gen2UpConverter object..." << std::endl;
     // Initilize it
     bool success;
-    if ( success =  amc.init() )
+    if ( success =  amc->init() )
     {
-        success &= amc.isInited();
+        success &= amc->isInited();
     }
     std::cout << std::endl;
 

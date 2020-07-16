@@ -2,6 +2,8 @@
 #define _GEN2UPCONVERTER_H_
 
 #include <iostream>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <yaml-cpp/yaml.h>
 #include <cpsw_api_user.h>
 
@@ -12,10 +14,17 @@
 #include "Dac38J84.h"
 #include "Logger.h"
 
-class Gen2UpConverter
+class IGen2UpConverter;
+
+typedef boost::shared_ptr<IGen2UpConverter>  Gen2UpConverter;
+
+class IGen2UpConverter
 {
 public: 
-    Gen2UpConverter(Path r);
+    IGen2UpConverter(Path p);
+
+    // Factory method, which returns a smart pointer
+    static Gen2UpConverter create(Path p);
 
     bool init();
 
