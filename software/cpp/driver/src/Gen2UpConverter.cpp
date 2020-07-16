@@ -7,7 +7,7 @@ Gen2UpConverter::Gen2UpConverter(Path p)
 :
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay1.c_str() ) ),
-    jesdRx         ( jesdRoot ),
+    jesdRx         ( IJesdRx::create(jesdRoot) ),
     jesdTx         ( jesdRoot ),
     lmk            ( root ),
     dac            ( root ),
@@ -31,23 +31,23 @@ bool Gen2UpConverter::init()
 
         // - Read current JesdRx/Tx enabled lanes
         uint32_t rxEn, txEn;
-        rxEn = jesdRx.getEnable();
+        rxEn = jesdRx->getEnable();
         txEn = jesdTx.getEnable();
         // - Disable all JesdRx/Tx lanes
-        jesdRx.setEnable(0);
+        jesdRx->setEnable(0);
         jesdTx.setEnable(0);
         // - Init DAC
         dac.init();
         // - Reset JesdRx/Tx GTs
-        jesdRx.resetGTs();
+        jesdRx->resetGTs();
         jesdTx.resetGTs();
 
         sleep(1);
 
         // - Clear JesdRx errors
-        jesdRx.clearErrors();
+        jesdRx->clearErrors();
         // - Restore JesdRx/Tx enabled lanes
-        jesdRx.setEnable(rxEn);
+        jesdRx->setEnable(rxEn);
         jesdTx.setEnable(txEn);
 
         sleep(2);
@@ -68,7 +68,7 @@ bool Gen2UpConverter::init()
         // - Check JesdTx errors
         success &= jesdTx.isLocked();
         // - Check JesdRx errors
-        success &= jesdRx.isLocked();
+        success &= jesdRx->isLocked();
 
        if ( success )
        {
@@ -105,7 +105,7 @@ bool Gen2UpConverter::isInited()
     success &= dac.isLocked();
 
     // Check is JesdRx is locked
-    success &= jesdRx.isLocked();
+    success &= jesdRx->isLocked();
 
     // Check if JesdTx is locked
     success &= jesdTx.isLocked();

@@ -1,16 +1,25 @@
 #ifndef _JESDRX_H_
 #define _JESDRX_H_
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <algorithm> 
 #include <cpsw_api_user.h>
 
 #include "helpers.h"
 #include "Logger.h"
 
-class JesdRx
+class IJesdRx;
+
+typedef boost::shared_ptr<IJesdRx> JesdRx;
+
+class IJesdRx
 {
 public:
-    JesdRx(Path r);
+    IJesdRx(Path p);
+
+    // Factory method, which returns a smart pointer
+    static JesdRx create(Path p);
 
     void     setEnable(uint32_t enable) const;
     uint32_t getEnable() const;

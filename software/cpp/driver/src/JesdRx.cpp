@@ -1,11 +1,19 @@
 #include "JesdRx.h"
 
-const std::string JesdRx::ModuleName  = "JesdRx";
-const std::size_t JesdRx::MaxNumLanes = 8;
+const std::string IJesdRx::ModuleName  = "JesdRx";
+const std::size_t IJesdRx::MaxNumLanes = 8;
 
-JesdRx::JesdRx(Path r)
+JesdRx IJesdRx::create(Path p)
+{
+    if(!p)
+        throw std::runtime_error(ModuleName + " : The root Path is empty");
+
+    return boost::make_shared<IJesdRx>(p);
+}
+
+IJesdRx::IJesdRx(Path p)
 :
-    root               ( r->findByName( ModuleName.c_str() ) ),
+    root               ( p->findByName( ModuleName.c_str() ) ),
     enableReg          ( IScalVal::create( root->findByName("Enable") ) ),
     dataValidReg       ( IScalVal_RO::create( root->findByName("DataValid") ) ),
     statusValidCntReg  ( IScalVal_RO::create( root->findByName("StatusValidCnt") ) ),
@@ -21,7 +29,7 @@ JesdRx::JesdRx(Path r)
     log(LoggerLevel::Debug) << "Object created. Number of lanes = " + to_string(numLanes);
 }
 
-bool JesdRx::isLocked()
+bool IJesdRx::isLocked()
 {
     log(LoggerLevel::Debug) << "Checking lock status:";
     log(LoggerLevel::Debug) << "----------------------------------";
@@ -74,25 +82,25 @@ bool JesdRx::isLocked()
     return success;
 }
 
-void JesdRx::setEnable(uint32_t enable) const
+void IJesdRx::setEnable(uint32_t enable) const
 {
     enableReg->setVal(&enable);
 }
 
-uint32_t JesdRx::getEnable() const
+uint32_t IJesdRx::getEnable() const
 {
     uint32_t u32;
     enableReg->getVal(&u32);
     return u32;
 }
 
-void JesdRx::clearErrors() const
+void IJesdRx::clearErrors() const
 {
     // We will use the Command defined in YAML
     clearErrorsCmd->execute();
 }
 
-void JesdRx::resetGTs() const
+void IJesdRx::resetGTs() const
 {
     // We will use the Command defined in YAML
     resetGTsCmd->execute();

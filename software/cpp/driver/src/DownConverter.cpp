@@ -7,7 +7,7 @@ DownConverter::DownConverter(Path p)
 :
     root           ( p->findByName( (CpswTopPaths::AppCore + ModuleName).c_str() ) ),
     jesdRoot       ( p->findByName( CpswTopPaths::AppTopJesdBay0.c_str() ) ),
-    jesdRx         ( jesdRoot ),
+    jesdRx         ( IJesdRx::create(jesdRoot) ),
     lmk            ( root ),
     initAmcCardCmd ( ICommand::create(root->findByName("InitAmcCard") ) ),
     log            ( ModuleName.c_str() )
@@ -30,17 +30,17 @@ bool DownConverter::init()
         // - Power down Lmk sys ref
         lmk.pwrDwnSysRef();
         // - Reset JesdRx GTs
-        jesdRx.resetGTs();
+        jesdRx->resetGTs();
         // - Init AMC card
         initAmcCardCmd->execute();
         // - Clear JesdRx errors
-        jesdRx.clearErrors();
+        jesdRx->clearErrors();
         
         sleep(1);
 
         // JESD Link Health Checking
         // - Check JesdRx errors
-        success = jesdRx.isLocked();
+        success = jesdRx->isLocked();
 
        if ( success )
        {
@@ -72,7 +72,7 @@ bool DownConverter::isInited()
     log(LoggerLevel::Debug) << "----------------------------------";
 
     // Check is JesdRx is locked
-    bool success { jesdRx.isLocked() };
+    bool success { jesdRx->isLocked() };
 
     if ( success )
         log(LoggerLevel::Debug) << "It is locked!";
