@@ -72,6 +72,13 @@ BOOST_TOP          = $(PACKAGE_SITE_TOP)/$(BOOST_PACKAGE_NAME)/$(BOOST_VERSION)
 BOOST_LIB          = $(BOOST_TOP)/$(PKG_ARCH)/lib
 BOOST_INCLUDE      = $(BOOST_TOP)/$(PKG_ARCH)/include
 
+# LLRFACM
+LLRFAMC_PACKAGE_NAME = llrfAmc
+LLRFAMC_VERSION      = master
+LLRFAMC_TOP          = $(PACKAGE_SITE_TOP)/$(LLRFAMC_PACKAGE_NAME)/$(LLRFAMC_VERSION)
+LLRFAMC_LIB          = $(LLRFAMC_TOP)/$(PKG_ARCH)/lib
+LLRFAMC_INCLUDE      = $(LLRFAMC_TOP)/$(PKG_ARCH)/include
+
 # These allow developers to override the CONFIG_SITE variable
 # settings without having to modify the configure/CONFIG_SITE
 # file itself.

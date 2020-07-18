@@ -11,10 +11,10 @@
 # IOC name
 epicsEnvSet("IOC_NAME", "SIOC:B084:RF50")
 
-# PV Prefix
+# PV prefix
 epicsEnvSet("YCPSWASYN_PREFIX", "LLRFGEN1")
 
-# CPSW Port name
+# CPSW port name
 epicsEnvSet("YCPSWASYN_PORT","YCPSWASYN_PORT")
 
 # Location to download the YAML file from the FPGA
@@ -23,11 +23,14 @@ epicsEnvSet("YAML_DIR","firmware/Llrf/yaml")
 # YAML file
 epicsEnvSet("YAML","${YAML_DIR}/000TopLevel.yaml")
 
-# Defaults Yaml file
+# Defaults yaml file
 epicsEnvSet("DEFAULTS_FILE", "${YAML_DIR}/config/llrf_config.yaml")
 
-# FPGA IP Address
+# FPGA IP address
 epicsEnvSet("FPGA_IP","10.0.1.104")
+
+# llrfAmcAsyn port name
+epicsEnvSet("LLRFAMCASYN_PORT","LLRFAMCASYN_PORT")
 
 # ======================================
 # Start from TOP
@@ -41,12 +44,25 @@ cd ${TOP}
 dbLoadDatabase("dbd/llrf.dbd",0,0)
 llrf_registerRecordDeviceDriver(pdbbase) 
 
+# ==========================================
+# Create the CPSW root using the yamlLoader
+# ==========================================
+cpswLoadYamlFile("${YAML}", "NetIODev", "", "${FPGA_IP}")
+
+# ==========================================
+# Load application specific configurations
+# ==========================================
+# Load the defautl configuration
+cpswLoadConfigFile("${DEFAULTS_FILE}", "mmio")
+
 # ===========================================
 #              DRIVER SETUP
 # ===========================================
 
-## yamlLoader
-cpswLoadYamlFile("${YAML}", "NetIODev", "", "${FPGA_IP}")
+## Configure the llrfAmcAsyn driver
+# LlrfAmcAsynConfig(
+#    Port Name)     # The name given to this port driver
+LlrfAmcAsynConfig("${LLRFAMCASYN_PORT}")
 
 # Set the location of the YCPSWASYN map files
 YCPSWASYNSetMapFilePath("firmware/maps")
@@ -62,12 +78,6 @@ YCPSWASYNSetPvMaxNameLen(100)
 #    DB Autogeneration mode,    # Set autogeneration of records. 0: disabled, 1: Enable usig maps, 2: Enabled using hash names.
 #    Load dictionary)           # Dictionary file path with registers to load. An empty string will disable this function
 YCPSWASYNConfig("${YCPSWASYN_PORT}", "", "${YCPSWASYN_PREFIX}", "1", "")
-
-# ==========================================
-# Load application specific configurations
-# ==========================================
-# Load the defautl configuration
-cpswLoadConfigFile("${DEFAULTS_FILE}", "mmio")
 
 # ==========================================
 
