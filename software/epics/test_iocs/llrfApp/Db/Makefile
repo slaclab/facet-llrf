@@ -29,6 +29,11 @@ DB_INSTALLS += $(YCPSWASYN)/db/waveform_stream16.template
 DB_INSTALLS += $(YCPSWASYN)/db/waveform_stream32.template
 DB_INSTALLS += $(YCPSWASYN)/db/saveLoadConfig.db
 
+# ==========================================
+# llrfAmcAsyn databases
+# ==========================================
+DB_INSTALLS += $(LLRFAMCASYN)/db/llrfAmcAsyn.db
+
 # Install Common databases needed by All IOCs
 # ========================================================
 # Install databases from iocAdmin package

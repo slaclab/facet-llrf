@@ -30,7 +30,7 @@ epicsEnvSet("DEFAULTS_FILE", "${YAML_DIR}/config/defaults_cw.yaml")
 epicsEnvSet("FPGA_IP","10.0.1.106")
 
 # llrfAmcAsyn port name
-epicsEnvSet("LLRFAMCASYN_PORT","LLRFAMCASYN_PORT")
+epicsEnvSet("LLRFAMCASYN_PORT","LLRFAMC")
 
 # ======================================
 # Start from TOP
@@ -59,6 +59,9 @@ cpswLoadConfigFile("${DEFAULTS_FILE}", "mmio")
 #              DRIVER SETUP
 # ===========================================
 
+# Set llrfAmc log level (0: Debug, 1: Warning, 2: Error (default), 3: None)
+#LlrfAmcAsynSetLogLevel(2)
+
 ## Configure the llrfAmcAsyn driver
 # LlrfAmcAsynConfig(
 #    Port Name)     # The name given to this port driver
@@ -82,11 +85,14 @@ YCPSWASYNConfig("${YCPSWASYN_PORT}", "", "${YCPSWASYN_PREFIX}", "1", "")
 # ===========================================
 #               ASYN MASKS
 # ===========================================
-asynSetTraceMask("${YCPSWASYN_PORT}",, -1, 0)
+asynSetTraceMask("${YCPSWASYN_PORT}", -1, 0)
+asynSetTraceMask("${LLRFAMCASYN_PORT}", -1, 0x09)
 
 # ===========================================
 #               DB LOADING
 # ===========================================
+# llrfAmcAsyn database
+dbLoadRecords("db/llrfAmcAsyn.db", "P=${YCPSWASYN_PREFIX},PORT=${LLRFAMCASYN_PORT}")
 
 # **********************************************************************
 # **** Load iocAdmin databases to support IOC Health and monitoring ****
