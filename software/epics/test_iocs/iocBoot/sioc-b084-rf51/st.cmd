@@ -15,7 +15,7 @@ epicsEnvSet("IOC_NAME", "SIOC:B084:RF51")
 epicsEnvSet("YCPSWASYN_PREFIX", "LLRFGEN2")
 
 # CPSW port name
-epicsEnvSet("YCPSWASYN_PORT","YCPSWASYN_PORT")
+epicsEnvSet("YCPSWASYN_PORT","YCPSWASYN")
 
 # Location to download the YAML file from the FPGA
 epicsEnvSet("YAML_DIR","firmware/LlrfGen2/yaml")
@@ -30,7 +30,7 @@ epicsEnvSet("DEFAULTS_FILE", "${YAML_DIR}/config/defaults_cw.yaml")
 epicsEnvSet("FPGA_IP","10.0.1.106")
 
 # llrfAmcAsyn port name
-epicsEnvSet("LLRFAMCASYN_PORT","LLRFAMC")
+epicsEnvSet("LLRFAMCASYN_PORT","LLRFAMCASYN")
 
 # ======================================
 # Start from TOP
@@ -85,7 +85,7 @@ YCPSWASYNConfig("${YCPSWASYN_PORT}", "", "${YCPSWASYN_PREFIX}", "1", "")
 # ===========================================
 #               ASYN MASKS
 # ===========================================
-asynSetTraceMask("${YCPSWASYN_PORT}", -1, 0)
+asynSetTraceMask("${YCPSWASYN_PORT}", -1, 0x01)
 asynSetTraceMask("${LLRFAMCASYN_PORT}", -1, 0x09)
 
 # ===========================================
