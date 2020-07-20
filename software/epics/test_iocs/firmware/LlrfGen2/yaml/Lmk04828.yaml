@@ -1044,7 +1044,7 @@ Lmk04828: &Lmk04828
           value: 0x0
         # 100 ms sleep
         - entry: usleep
-          value: 100000           
+          value: 100000
     #########################################################
     PwrUpSysRef:
       name: PwrUpSysRef
@@ -1053,15 +1053,12 @@ Lmk04828: &Lmk04828
         offset: 0x0
       description: Powerup the sysref lines
       sequence:
-        # 1000 ms sleep
-        - entry: usleep
-          value: 1000000      
         # Turn on normal continuous sysref
         - entry: EnableSysRef
-          value: 0x3
+          value: 0x3     # 2 pulse sysref mode, 3 continuous sysref mode
         # 2000 ms sleep
         - entry: usleep
-          value: 2000000          
+          value: 2000000
     #########################################################
     InitLmk:
       name: InitLmk
@@ -1074,29 +1071,29 @@ Lmk04828: &Lmk04828
         # Turn off normal continuous sysref
         - entry: EnableSysRef
           value: 0x0
-        
+
         # Turn On SYNC
         - entry: EnableSync
           value: 0x0
-        
+
         # 1000 ms sleep
         - entry: usleep
           value: 1000000
-          
+
         # Toggle Sync bit
         - entry: SyncBit
           value: 0x1
         - entry: SyncBit
           value: 0x0
-        
+
         # 1000 ms sleep
         - entry: usleep
           value: 1000000
-        
+
         # Turn on normal continuous sysref
         - entry: EnableSysRef
           value: 0x3
-        
+
         # Turn Off SYNC
         - entry: EnableSync
           value: 0xff
@@ -1181,7 +1178,7 @@ Lmk04828: &Lmk04828
       mode: RO
       description: ID_PROD_UPPER
     ID_DEVICE_TYPE:
-    #########################################################       
+    #########################################################
       at:
         offset: 0x00C
       class: IntField
