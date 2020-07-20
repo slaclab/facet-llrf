@@ -723,12 +723,12 @@
             - SoftBufferTrigger: !<value> 0x0
             - TuneSled: !<value> 0x0
             - CfgRegister: !<value> 0xff1c
-            - ModNVRegB: !<value> 0x00
-            - ModNVRegA: !<value> 0x00
-            - ModWiperRegA: !<value> 0x2B
-            - ModWiperRegB: !<value> 0x20
-            - KlyWiperRegB: !<value> 0x6C
-            - KlyWiperRegA: !<value> 0x3D
+            #- ModNVRegB: !<value> 0x00
+            #- ModNVRegA: !<value> 0x00
+            #- ModWiperRegA: !<value> 0x2B
+            #- ModWiperRegB: !<value> 0x20
+            #- KlyWiperRegB: !<value> 0x6C
+            #- KlyWiperRegA: !<value> 0x3D
             - ClearFault: !<value> 0x1 # command to clear fault
         - BSSS:
             - EdefDestSel: !<value> 0x00000
@@ -743,14 +743,6 @@
                 - Limit_7_Hz
                 - Limit_7_Hz
                 - Limit_7_Hz
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
-                - INVALID_0
             - channelSevr: !<value> 0x0000000000000000
             - channelMask: !<value> 0x00000000
             - enable: !<value> 0x0
@@ -999,7 +991,7 @@
             - Dac38J84:
                 - EnableTx: !<value> 0x1
                 - DacReg: !<value>
-                    - 0x0218
+                    - 0x0018
                     - 0x0003
                     - 0x2082 #zero JESD when link not estb not 2s 4 wire
                     - 0xA300
@@ -1075,9 +1067,9 @@
                     - 0x0000 # 4 seems right, sends JESD0 to link 0 and JESD1 to Link1
                     - 0x821 # Only use RX3
                     - 0x0801
-                    - 0x0901 #using 2 lanes of JESD
+                    - 0x1f01 #using 2 lanes of JESD
                     - 0x0100
-                    - 0x0f0f  # Enable scrambler nothigh density mode
+                    - 0x0f2f  # Enable scrambler nothigh density mode
                     - 0x1c61
                     - 0x0000
                     - 0x00DC  # sync_request_ena_link0
@@ -1275,7 +1267,7 @@
                 - AdcReg_0x0003: !<value> 0x03
                 - AdcReg_0x0002: !<value> 0x00
                 - AdcReg_0x0000: !<value> 0x3c
-    - AppTopJesd:
+    - AppTopJesd0:
         - JesdRx:
             - ThresholdHigh: !<value>
                 - 0xa000
@@ -1284,16 +1276,6 @@
                 - 0xa000
                 - 0xa000
                 - 0xa000
-                - 0x0000
-                - 0x0000
-                - 0xa000
-                - 0xa000
-                - 0xa000
-                - 0xa000
-                - 0xa000
-                - 0xa000
-                - 0x0000
-                - 0x0000
             - ThresholdLow: !<value>
                 - 0x5000
                 - 0x5000
@@ -1301,16 +1283,6 @@
                 - 0x5000
                 - 0x5000
                 - 0x5000
-                - 0x0000
-                - 0x0000
-                - 0x5000
-                - 0x5000
-                - 0x5000
-                - 0x5000
-                - 0x5000
-                - 0x5000
-                - 0x0000
-                - 0x0000
             - PowerDown: !<value> 0x00
             - LinkErrMask: !<value> 0x3f
             - InvertAdcData: !<value> 0x00
@@ -1322,6 +1294,49 @@
             - SubClass: !<value> 0x1
             - SysrefDelay: !<value> 0x00
             - Enable: !<value> 0x3f
+    - AppTopJesd1:
+        - JesdRx:
+            - ThresholdHigh: !<value>
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+                - 0xa000
+            - ThresholdLow: !<value>
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+                - 0x5000
+            - PowerDown: !<value> 0x00
+            - LinkErrMask: !<value> 0x3f
+            - InvertAdcData: !<value> 0x00
+            - ScrambleEnable: !<value> Enabled
+            - InvertSync: !<value> Inverted
+            - ResetGTs: !<value> 0x0
+            - ClearErrors: !<value> 0x0
+            - ReplaceEnable: !<value> Enabled
+            - SubClass: !<value> 0x1
+            - SysrefDelay: !<value> 0x00
+            - Enable: !<value> 0x3f
+        - JesdTx:
+            - Enable: !<value> 0x4 #Turn on only lane we need TX2 goes to serdes3
+            - HighAmplitudeVal: !<value> 0xC000
+            - LowAmplitudeVal: !<value> 0x4000
+            - SquarePeriod: !<value> 0x0004
+            - RampStep: !<value> 0x0001
+            - ScrambleEnable: !<value> Enabled
+            - TestSigEnable: !<value> 0x0
+            - InvertSync: !<value> 0x0
+            - ReplaceEnable: !<value> 0x1
+            - SubClass: !<value> 0x1
+            - dataOutMux: !<value> 'UserData'
+            - testOutMux: !<value> 'SquareWave'
+            - TxDiffCtrl: !<value> 0xFF
+            - TxPostCursor: !<value> 0xF
+            - TxPreCursor: !<value> 0xF
     - DaqMuxV2:
         - DecimationAveraging: !<value>
             - Enabled
