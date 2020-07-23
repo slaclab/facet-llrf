@@ -37,14 +37,17 @@ mmio: &mmio
         AppTopJesd0:
           children:
             JesdRx:
+              <<: *JesdRx_6
               instantiate: true              
               #metadata:
               #  numRxLanes: &numRxLanes 6
         AppTopJesd1:
           children:
             JesdRx:
+              <<: *JesdRx_6
               instantiate: true              
             JesdTx:
+              <<: *JesdTx_7
               instantiate: true
               #metadata: 
               #  numTxLanes: &numTxLanes 0              
