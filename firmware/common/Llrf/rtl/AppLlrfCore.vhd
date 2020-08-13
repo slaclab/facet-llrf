@@ -61,7 +61,7 @@ entity AppLlrfCore is
       timestamp      : in  slv(63 downto 0);
       dmod           : in  slv(191 downto 0);
       bsa            : in  slv(127 downto 0);
-      trigDaqOut     : out slv(1 downto 0);
+      trigDaqOut     : out slv(1 downto 0) := (others => '0');
 
       -- JESD ADC
       adcHs          : in  sampleDataVectorArray(1 downto 0, 5 downto 0);
