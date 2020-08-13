@@ -354,8 +354,8 @@ begin
          generic map (
             TPD_G => TPD_G)
          port map (
-            clk     => s_trigPulse(0),
-            dataIn  => trigPulse,
+            clk     => jesdClk(i),
+            dataIn  => s_trigPulse(5),
             dataOut => trigHw(i));
 
    end generate;
