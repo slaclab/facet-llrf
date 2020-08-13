@@ -258,13 +258,13 @@ begin
    dacValues(0,4) <= (others => '0');
    dacValues(0,5) <= (others => '0');
    dacValues(0,6) <= (others => '0');
-   dacValues(1,0) <= s_dacLs(0);
-   dacValues(1,1) <= s_dacLs(1);
-   dacValues(1,2) <= s_dacLs(2);
+   dacValues(1,0) <= s_dacHs;
+   dacValues(1,1) <= s_dacHs;
+   dacValues(1,2) <= s_dacHs;
    dacValues(1,3) <= s_dacHs;
-   dacValues(1,4) <= (others => '0');
-   dacValues(1,5) <= (others => '0');
-   dacValues(1,6) <= (others => '0');
+   dacValues(1,4) <= s_dacHs;
+   dacValues(1,5) <= s_dacHs;
+   dacValues(1,6) <= s_dacHs;
 
    GEN_ADC_SIGNALS :
    for i in 5 downto 0 generate
@@ -315,37 +315,51 @@ begin
    end generate GEN_TRIG_MUX;
 
 
-   ----------------
-   -- IQ Axi lite BRAM waveforms
-   ----------------
-   GEN_WAVEFORMS : for i in 1 downto 0 generate
-      -- Dual port RAM accessible from axiLite
-      -- waveform input to the System Generator
-      U_Waveform : entity surf.AxiDualPortRam
-         generic map (
-            TPD_G        => TPD_G,
-            --BRAM_EN_G    => true,
-            --REG_EN_G     => true,
-            --MODE_G       => "write-first",
-            ADDR_WIDTH_G => WF_ADDR_WIDTH_C,
-            DATA_WIDTH_G => WF_DATA_WIDTH_C,
-            INIT_G       => "0")
-         port map (
-            -- Axi clk domain
-            axiClk         => axilClk,
-            axiRst         => axilRst,
-            axiReadMaster  => axilReadMasters (WAVEFORM_INDEX_C+i),
-            axiReadSlave   => axiLReadSlaves  (WAVEFORM_INDEX_C+i),
-            axiWriteMaster => axilWriteMasters(WAVEFORM_INDEX_C+i),
-            axiWriteSlave  => axilWriteSlaves (WAVEFORM_INDEX_C+i),
+--   ----------------
+--   -- IQ Axi lite BRAM waveforms
+--   ----------------
+--   GEN_WAVEFORMS : for i in 1 downto 0 generate
+--      -- Dual port RAM accessible from axiLite
+--      -- waveform input to the System Generator
+--      U_Waveform : entity surf.AxiDualPortRam
+--         generic map (
+--            TPD_G        => TPD_G,
+--            --BRAM_EN_G    => true,
+--            --REG_EN_G     => true,
+--            --MODE_G       => "write-first",
+--            ADDR_WIDTH_G => WF_ADDR_WIDTH_C,
+--            DATA_WIDTH_G => WF_DATA_WIDTH_C,
+--            INIT_G       => "0")
+--         port map (
+--            -- Axi clk domain
+--            axiClk         => axilClk,
+--            axiRst         => axilRst,
+--            axiReadMaster  => axilReadMasters (WAVEFORM_INDEX_C+i),
+--            axiReadSlave   => axiLReadSlaves  (WAVEFORM_INDEX_C+i),
+--            axiWriteMaster => axilWriteMasters(WAVEFORM_INDEX_C+i),
+--            axiWriteSlave  => axilWriteSlaves (WAVEFORM_INDEX_C+i),
+--
+--            -- Sysgen clk domain
+--            clk  => jesdClk(1),
+--            rst  => jesdRst(1),
+--            en   => '1',
+--            addr => s_wfAddr(i),
+--            dout => s_wfData(i));
+--   end generate GEN_WAVEFORMS;
 
-            -- Sysgen clk domain
-            clk  => jesdClk(1),
-            rst  => jesdRst(1),
-            en   => '1',
-            addr => s_wfAddr(i),
-            dout => s_wfData(i));
-   end generate GEN_WAVEFORMS;
+
+   U_SYNC_TRIG : for i in 1 downto 0 generate
+
+      U_SYNC_ONE_SHOT  : entity surf.SynchronizerOneShot
+         generic map (
+            TPD_G => TPD_G)
+         port map (
+            clk     => jesdClk(i),
+            dataIn  => s_trigPulse(5),
+            dataOut => trigHw(i));
+
+   end generate;
+
 
    ----------------
    -- SYSGEN Module
@@ -379,7 +393,7 @@ begin
          timestamp      => timingTrig.timestamp(63 downto 0),
          dmod           => timingTrig.dmod(191 downto 0),
 	 bsa            => timingTrig.bsa(127 downto 0),
-         trigDaqOut     => trigHw,
+         trigDaqOut     => open,
          trigMode       => s_trigMode,
          -- DAC SigGen
          dacSigCtrl     => dacSigCtrl,
