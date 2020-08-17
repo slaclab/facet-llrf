@@ -9,7 +9,8 @@ export USE_XVC_DEBUG = 1
 # PRJ_VERSION = 0x00000005  HLS LLRF
 # PRJ_VERSION = 0x00000006  Add HW trigger
 # PRJ_VERSION = 0x00000007  Fix HLS IQ to AP.  Add DaqMux HW trigger
-export PRJ_VERSION = 0x00000007
+# PRJ_VERSION = 0x00000008  Add max(abs(beam volts)) to BSA stream
+export PRJ_VERSION = 0x00000008
 
 ##########################################################################################
 # Applications must define if using advance AMC carrier build
