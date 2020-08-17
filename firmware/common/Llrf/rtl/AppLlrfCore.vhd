@@ -469,6 +469,7 @@ begin
        bsaIn                  => bsa,
        demodI                 => iDemodHs,
        demodQ                 => qDemodHs,
+       beamVolt               => adc357(1, 5),
        pulseInI               => iSigGen(15 downto 0),
        pulseInQ               => qSigGen(15 downto 0),
        pulseOutI              => iSigGenFb,
