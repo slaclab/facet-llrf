@@ -229,6 +229,11 @@ architecture mapping of AppCore is
    signal streamMaster         : AxiStreamMasterType;
    signal streamSlave          : AxiStreamSlaveType;
 
+   signal hlsStreamMaster      : AxiStreamMasterType;
+   signal hlsStreamSlave       : AxiStreamSlaveType;
+   signal rtmStreamMaster      : AxiStreamMasterType;
+   signal rtmStreamSlave       : AxiStreamSlaveType;
+
    constant DEBUG_C : boolean := true;
 
    component ila_0
@@ -412,8 +417,8 @@ begin
          -- Streaming port
          streamClk      => axilClk,
          streamRst      => axilRst,
-         streamMaster   => obAppDebugMaster,
-         streamSlave    => obAppDebugSlave );
+         streamMaster   => hlsStreamMaster,
+         streamSlave    => hlsStreamSlave );
 
    GEN_LCLS_I : if APP_TIMING_MODE_C = 1 generate
      V2FV1 : entity lcls_timing_core.EvrV2FromV1
@@ -689,7 +694,8 @@ begin
       generic map (
          TPD_G            => TPD_G,
          IODELAY_GROUP_G  => IODELAY_GROUP_C,
-         AXIL_BASE_ADDR_G => AXI_CONFIG_C(RTM_INDEX_C).baseAddr)
+         AXIL_BASE_ADDR_G => AXI_CONFIG_C(RTM_INDEX_C).baseAddr,
+         TDEST_G          => x"C1")
       port map (
          -- Recovered EVR clock
          recClk          => timingClk,
@@ -698,6 +704,7 @@ begin
          stndbyTrig      => s_trigPulse(1),
          accelTrig       => s_trigPulse(2),
          dataTrig        => s_trigPulse(3),
+         timestamp       => timingTrig.timestamp(63 downto 0),
          -- AXI-Lite Interface
          axilClk         => axilClk,
          axilRst         => axilRst,
@@ -705,6 +712,11 @@ begin
          axilReadSlave   => axilReadSlaves(RTM_INDEX_C),
          axilWriteMaster => axilWriteMasters(RTM_INDEX_C),
          axilWriteSlave  => axilWriteSlaves(RTM_INDEX_C),
+         -- AXI Stream Interface (axisClk domain)
+         axisClk         => axilClk,
+         axisRst         => axilRst,
+         axisMaster      => rtmStreamMaster, 
+         axisSlave       => rtmStreamSlave,
          -----------------------
          -- Application Ports --
          -----------------------
@@ -725,6 +737,23 @@ begin
          RDY    => open,
          REFCLK => jesdClk2x(1),
          RST    => jesdRst2x(1));
+
+   U_STREAM_MUX : entity surf.AxiStreamMux
+      generic map (
+         TPD_G         => TPD_G,
+	 PIPE_STAGES_G => 1,
+	 NUM_SLAVES_G  => 2)
+      port map (
+         axisClk         => axilClk,
+	 axisRst         => axilRst,
+	 -- Slaves
+	 sAxisMasters(0) => hlsStreamMaster,
+	 sAxisMasters(1) => rtmStreamMaster,
+	 sAxisSlaves(0)  => hlsStreamSlave,
+	 sAxisSlaves(1)  => rtmStreamSlave,
+	 -- Master
+	 mAxisMaster     => obAppDebugMaster,
+	 mAxisSlave      => obAppDebugSlave);
 
    debugValues <= s_debugValues;
    debugValids <= s_debugValids;
