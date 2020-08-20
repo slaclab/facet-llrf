@@ -13,6 +13,19 @@
 #include AmcCarrierDRAM.yaml
 #include AppTop.yaml
 
+# It is important to use the same parameters
+# for shared protocol modules (e.g., all RSSI
+# on the same port is in fact one single, shared
+# module)
+#
+connectionParameters:
+  udpPri:     &udpPri      80
+  udpThreads: &udpThreads   1
+  rssi: &rssiParams
+    retransmissionTimeoutUS: 100000
+    cumulativeAckTimeoutUS:   50000
+    threadPriority:             82
+
 #MMIO range, will be attached to FPGA
 mmio: &mmio
   size: 0x100000000 # 4GB of address space
@@ -42,10 +55,10 @@ mmio: &mmio
               instantiate: false
         DacSigGen:
           <<: *DacSigGen
-          instantiate: true
           at:
             offset: 0x70000000
             nelms: 1
+          instantiate: true
           children:
             Waveform:
               children:
@@ -81,6 +94,13 @@ stream: &stream
     TDEST: 0x80
     stripHeader: yes
 
+tstream: &tstream
+    SRP:
+      protocolVersion: SRP_UDP_NONE
+    UDP:
+      port: 8197
+      pollSecs: 1
+
 NetIODev:
   ipAddr: 10.0.1.105
   class: NetIODev
@@ -90,9 +110,14 @@ NetIODev:
        <<: *mmio
        at:
          SRP:
-           protocolVersion: SRP_UDP_V2
+           protocolVersion: SRP_UDP_V3
          UDP:
-           port: 8192
+           port: 8193
+         RSSI: yes
+         depack:
+           useDepack: yes
+         TDESTMux:
+           TDEST: 0
      strm:
        <<: *strm
        at:
@@ -104,6 +129,11 @@ NetIODev:
          depack: yes
          TDESTMux:
            TDEST: 4
+     tstream:
+       class: Field
+       at:
+         <<: *tstream
+
      hlsStream:
        <<: *strm
        at:
