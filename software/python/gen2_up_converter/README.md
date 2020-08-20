@@ -20,3 +20,15 @@ This scripts initialize the Gen2 up converter board. It requires the `sioc-b084-
 ```
 $ ./init.py
 ```
+
+### init_v2.py
+
+Similar to `init.py` but with a different sequence of operations.
+
+### plot_b1_l1.py
+
+This script reads and plots the second channel of the second DaqMux.
+
+### setup_daqmux.py
+
+This script sets up the DaqMux.
