@@ -52,12 +52,15 @@ mmio: &mmio
         AppTopJesd0:
           children:
             JesdRx:
+              <<: *JesdRx_6
               instantiate: true
         AppTopJesd1:
           children:
             JesdRx:
+              <<: *JesdRx_6
               instantiate: true
             JesdTx:
+              <<: *JesdTx_7
               instantiate: true
         AppCore:
           children:

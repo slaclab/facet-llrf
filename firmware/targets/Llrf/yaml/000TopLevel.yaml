@@ -50,6 +50,7 @@ mmio: &mmio
         AppTopJesd:
           children:
             JesdRx:
+              <<: *JesdRx_6
               instantiate: true
             JesdTx:
               instantiate: false
