@@ -9,8 +9,10 @@
 ##############################################################################
 #schemaversion 3.0.0
 #once AppTopJesd.yaml
+#include JesdRx.yaml
 #include JesdRx_6.yaml
 #include JesdTx.yaml
+#include JesdTx_7.yaml
 
 AppTopJesd: &AppTopJesd 
   description: Common Application Top Level JESD Module
@@ -22,7 +24,7 @@ AppTopJesd: &AppTopJesd
   ########
     ##################################################     
     JesdRx:
-      <<: *JesdRx_6
+      <<: *JesdRx
       at:
         offset: 0x00000000  
       instantiate: false 

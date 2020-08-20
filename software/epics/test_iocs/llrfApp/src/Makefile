@@ -9,7 +9,7 @@ USR_CXXFLAGS += -std=c++0x
 # =====================================================
 # Path to "NON EPICS" External PACKAGES: USER INCLUDES
 # ======================================================
-USR_INCLUDES = $(addprefix -I,$(BOOST_INCLUDE) $(CPSW_FRAMEWORK_INCLUDE) $(YAML_INCLUDE))
+USR_INCLUDES = $(addprefix -I,$(BOOST_INCLUDE) $(CPSW_FRAMEWORK_INCLUDE) $(YAML_INCLUDE) $(LLRFAMC_INCLUDE))
 # =====================================================
 
 # ======================================================
@@ -17,13 +17,14 @@ USR_INCLUDES = $(addprefix -I,$(BOOST_INCLUDE) $(CPSW_FRAMEWORK_INCLUDE) $(YAML_
 # ======================================================
 cpsw_DIR = $(CPSW_FRAMEWORK_LIB)
 yaml-cpp_DIR = $(YAML_LIB)
+llrfAmc_DIR = $(LLRFAMC_LIB)
 
 # =====================================================
 
 # ======================================================
 # LINK "NON EPICS" EXTERNAL PACKAGE LIBRARIES STATICALLY
 # =======================================================
-USR_LIBS_Linux += cpsw yaml-cpp
+USR_LIBS_Linux += llrfAmc cpsw yaml-cpp
 # ======================================================
 
 #=============================
@@ -41,6 +42,7 @@ llrf_DBD += system.dbd
 llrf_DBD += asyn.dbd
 llrf_DBD += yamlLoader.dbd
 llrf_DBD += ycpswasyn.dbd
+llrf_DBD += llrfAmcAsyn.dbd
 llrf_DBD += iocAdmin.dbd
 llrf_DBD += devSeqCar.dbd
 
@@ -52,6 +54,7 @@ llrf_LIBS += devIocStats
 llrf_LIBS += autosave
 llrf_LIBS += yamlLoader
 llrf_LIBS += ycpswasyn
+llrf_LIBS += llrfAmcAsyn
 llrf_LIBS += asyn
 llrf_LIBS += seqCar seq pv
 

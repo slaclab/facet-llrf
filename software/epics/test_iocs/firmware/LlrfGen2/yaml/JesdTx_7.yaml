@@ -1,0 +1,60 @@
+##############################################################################
+## This file is part of 'SLAC Firmware Standard Library'.
+## It is subject to the license terms in the LICENSE.txt file found in the 
+## top-level directory of this distribution and at: 
+##    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+## No part of 'SLAC Firmware Standard Library', including this file, 
+## may be copied, modified, propagated, or distributed except according to 
+## the terms contained in the LICENSE.txt file.
+##############################################################################
+#schemaversion 3.0.0
+#once JesdTx_7.yaml
+#include JesdTx.yaml
+
+JesdTx_7: &JesdTx_7
+  <<: *JesdTx
+  description: JESD TX Module (7 lanes)
+  metadata:
+    numTxLanes: &numTxLanes 7
+  children:
+    Enable:
+      sizeBits: *numTxLanes
+    InvertDacData:   
+      sizeBits: *numTxLanes
+    PowerDown:   
+      sizeBits: *numTxLanes
+    GTReady:
+      at:
+        nelms: *numTxLanes
+    DataValid:        
+      at:
+        nelms: *numTxLanes
+    IlasActive:       
+        nelms: *numTxLanes
+    nSync:       
+      at:
+        nelms: *numTxLanes
+    TxEnabled:        
+      at:
+        nelms: *numTxLanes
+    SysRefDetected:       
+      at:
+        nelms: *numTxLanes
+    dataOutMux:       
+      at:
+        nelms: *numTxLanes
+    testOutMux:
+      at:
+        nelms: *numTxLanes
+    StatusValidCnt:
+      at:
+        nelms: *numTxLanes
+    TxDiffCtrl:
+      at:
+        nelms: *numTxLanes
+    TxPostCursor:
+      at:
+        nelms: *numTxLanes
+    TxPreCursor:
+      at:
+        nelms: *numTxLanes

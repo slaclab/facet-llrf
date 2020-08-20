@@ -255,7 +255,17 @@ LlrfPll: &LlrfPll
       sizeBits: 16
       isSigned: yes
       mode: RW
-      description: "LO DAC manual control"
+      description: "Clock DAC manual control"
+    #########################################################
+    userDacSet:
+      class: IntField
+      at:
+        offset: 0x80C
+        nelms: 1
+      sizeBits: 16
+      isSigned: yes
+      mode: RW
+      description: "User DAC manual control"
     #########################################################
     loPllPhaseSet:
       class: IntField

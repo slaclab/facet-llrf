@@ -1053,122 +1053,50 @@ Lmk04828: &Lmk04828
         offset: 0x0
       description: Powerup the sysref lines
       sequence:
-        - entry: EnableSysRef # 2 pulse sysref mode, 3 continuous sysref mode
-          value: 0x3
-        - entry: LmkReg_0x0143
-          value: 0x12
+        # Turn on normal continuous sysref
+        - entry: EnableSysRef
+          value: 0x3     # 2 pulse sysref mode, 3 continuous sysref mode
+        # 2000 ms sleep
         - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x32
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x12
-        - entry: usleep
-          value: 10000
-    #########################################################
-    PwrDwnLmkChip:
-      class: SequenceCommand
-      at:
-        offset: 0x0
-      description: "Power down the LMK chip"
-      sequence:
-        # Powr down chip
-        - entry: POWER_DOWN
-          value: 0x1
-        # 10 ms sleep
-        - entry: usleep
-          value: 10000
-    #########################################################
-    PwrUpLmkChip:
-      class: SequenceCommand
-      at:
-        offset: 0x0
-      description: "Power up the LMK chip"
-      sequence:
-        # Powr up chip
-        - entry: POWER_DOWN
-          value: 0x0
-        # 10 ms sleep
-        - entry: usleep
-          value: 10000
+          value: 2000000
     #########################################################
     InitLmk:
       name: InitLmk
       class: SequenceCommand
       at:
         offset: 0x0
-      description: "Synchronise LMK internal counters. Warning this function will power
-        off and power on all the system clocks"
+      description: Synchronise LMK internal counters. Warning this function will power
+        off and power on all the system clocks
       sequence:
+        # Turn off normal continuous sysref
+        - entry: EnableSysRef
+          value: 0x0
 
-        - entry: LmkReg_0x0139
+        # Turn On SYNC
+        - entry: EnableSync
           value: 0x0
+
+        # 1000 ms sleep
         - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x11
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0140
+          value: 1000000
+
+        # Toggle Sync bit
+        - entry: SyncBit
+          value: 0x1
+        - entry: SyncBit
           value: 0x0
+
+        # 1000 ms sleep
         - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0144
-          value: 0x74
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x11
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x31
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x11
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0144
-          value: 0xff
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0139
-          value: 0x2
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x013E
+          value: 1000000
+
+        # Turn on normal continuous sysref
+        - entry: EnableSysRef
           value: 0x3
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x12
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x32
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0143
-          value: 0x12
-        - entry: usleep
-          value: 10000
 
-        # Fixed Register:
-        - entry: LmkReg_0x0145 # Always program this register to value 127 (0x7F)
-          value: 0x7f
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0171 # Always program to 170 (0xAA)
-          value: 0xaa
-        - entry: usleep
-          value: 10000
-        - entry: LmkReg_0x0172 # Always program to 2 (0x02)
-          value: 0x2
-        - entry: usleep
-          value: 10000
+        # Turn Off SYNC
+        - entry: EnableSync
+          value: 0xff
     #########################################################
     SyncBit:
     #########################################################
@@ -1249,8 +1177,8 @@ Lmk04828: &Lmk04828
       sizeBits: 8
       mode: RO
       description: ID_PROD_UPPER
-    #########################################################       
     ID_DEVICE_TYPE:
+    #########################################################
       at:
         offset: 0x00C
       class: IntField
@@ -1258,11 +1186,3 @@ Lmk04828: &Lmk04828
       sizeBits: 8
       mode: RO
       description: ID_DEVICE_TYPE
-    #########################################################
-    POWER_DOWN:
-      at:
-        offset: 0x008
-      class: IntField
-      sizeBits: 1
-      mode: RW
-      description: "POWER_DOWN"

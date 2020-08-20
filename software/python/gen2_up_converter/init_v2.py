@@ -49,38 +49,98 @@ if __name__ == "__main__":
     print('==============================')
     print('')
 
-    # Emulate pyrogue's AppTop.Init(), taken from 
-    # https://github.com/slaclab/amc-carrier-core/blob/32108759758761ffcf6182e61fdf8018eaf5910b/python/AmcCarrierCore/AppTop/_AppTop.py
+    # Emulate pyrogue's AppTop.Init(), taken from
+    # https://github.com/slaclab/amc-carrier-core/blob/master/python/AmcCarrierCore/AppTop/_AppTop.py
     print('Running initialization code...')
+
+    rx_enable = epics.caget('{}:AT:ATJ1:JR:Enable:Rd'.format(epics_prefix))
+    tx_enable = epics.caget('{}:AT:ATJ1:JT:Enable:Rd'.format(epics_prefix))
+    print('rx_enable = 0x{:02x}'.format(rx_enable))
+    print('tx_enable = 0x{:02x}'.format(tx_enable))
 
     retry_max = 8
     for i in range(retry_max):
         print('Executing init code, try {}...'.format(i))
+
+        epics.caput('{}:AT:ATJ1:JR:Enable:St'.format(epics_prefix), 0)
+        epics.caput('{}:AT:ATJ1:JT:Enable:St'.format(epics_prefix), 0)
+
         epics.caput('{}:AT:ATJ1:JR:ResetGTs:St'.format(epics_prefix), 1)
         epics.caput('{}:AT:ATJ1:JT:ResetGTs:St'.format(epics_prefix), 1)
-        epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrDwnLmkChip:Ex'.format(epics_prefix), 1)
-        epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrDwnSysRef:Ex'.format(epics_prefix), 1)
-        epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrUpLmkChip:Ex'.format(epics_prefix), 1)
+
         time.sleep(1.000)
-        epics.caput('{}:AT:AC:AmcG2UC:LMK:PwrUpSysRef:Ex'.format(epics_prefix), 1)
-        time.sleep(0.250)
-        rx_enable = epics.caget('{}:AT:ATJ1:JR:Enable:Rd'.format(epics_prefix))
-        tx_enable = epics.caget('{}:AT:ATJ1:JT:Enable:Rd'.format(epics_prefix))
-        epics.caput('{}:AT:ATJ1:JR:Enable:St'.format(epics_prefix), 0)
-        epics.caput('{}:AT:ATJ1:JR:ResetGTs:St'.format(epics_prefix),0)
-        epics.caput('{}:AT:ATJ1:JT:Enable:St'.format(epics_prefix), 0)
-        epics.caput('{}:AT:ATJ1:JT:ResetGTs:St'.format(epics_prefix),0)
-        time.sleep(0.250)
+
+        epics.caput('{}:AT:ATJ1:JR:ResetGTs:St'.format(epics_prefix), 0)
+        epics.caput('{}:AT:ATJ1:JT:ResetGTs:St'.format(epics_prefix), 0)
+
+        time.sleep(1.000)
+
+        # DAC init
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:EnableTx:St'.format(epics_prefix), 0)
+        time.sleep(0.010)
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:ClearAlarms:Ex'.format(epics_prefix), 1)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[60] |= 0x200
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[60] &= 0xFDFF
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x1E
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x1E
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x1F
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        dr = epics.caget('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix))
+        dr[74] = ( dr[74] & 0xFFE0 ) | 0x01
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:DacReg:Rd'.format(epics_prefix), dr)
+        time.sleep(0.010)
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:EnableTx:St'.format(epics_prefix), 1)
+
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:NcoSync:Ex'.format(epics_prefix), 1)
+
+        time.sleep(1.000)
+
+        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:ClearAlarms:Ex'.format(epics_prefix), 1)
+
         epics.caput('{}:AT:ATJ1:JT:ClearTxStatus:Ex'.format(epics_prefix), 1)
         epics.caput('{}:AT:ATJ1:JT:Enable:St'.format(epics_prefix), tx_enable)
+
         epics.caput('{}:AT:ATJ1:JR:ClearRxErrors:Ex'.format(epics_prefix), 1)
         epics.caput('{}:AT:ATJ1:JR:Enable:St'.format(epics_prefix), rx_enable)
 
-        
-        epics.caput('{}:AT:AC:AmcG2UC:Dac38J84:NcoSync:Ex'.format(epics_prefix), 1)
+        time.sleep(2.000)
 
+        #####################
+        # Check SYSREF Period
+        #####################
         link_locked = True
+        sysref_period_min = poll_and_read_pv('{}:AT:ATJ1:JT:SysRefPeriodmin:Rd'.format(epics_prefix))
+        sysref_period_max = poll_and_read_pv('{}:AT:ATJ1:JT:SysRefPeriodmax:Rd'.format(epics_prefix))
 
+        if sysref_period_min != sysref_period_max:
+            print('AppTopJesd1/JesdTx link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
+            link_locked = False
+
+        sysref_period_min = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmin:Rd'.format(epics_prefix))
+        sysref_period_max = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmax:Rd'.format(epics_prefix))
+
+        if sysref_period_min != sysref_period_max:
+            print('AppTopJesd1/JesdRx link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
+            link_locked = False
+
+        ######################
+        # Check the link locks
+        ######################
         jesdrx1_data_valid = poll_and_read_pv('{}:AT:ATJ1:JR:DataValid:Rd'.format(epics_prefix))
         jesdrx1_pos_err    = poll_and_read_pv('{}:AT:ATJ1:JR:PositionErr:Rd'.format(epics_prefix))
         jesdrx1_align_err  = poll_and_read_pv('{}:AT:ATJ1:JR:AlignErr:Rd'.format(epics_prefix))
@@ -112,20 +172,7 @@ if __name__ == "__main__":
             link_locked = False
 
 
-        sysref_period_min = poll_and_read_pv('{}:AT:ATJ1:JT:SysRefPeriodmin:Rd'.format(epics_prefix))
-        sysref_period_max = poll_and_read_pv('{}:AT:ATJ1:JT:SysRefPeriodmax:Rd'.format(epics_prefix))
-
-        if sysref_period_min != sysref_period_max:
-            print('AppTopJesd1/JesdTx link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
-            link_locked = False
-
-        sysref_period_min = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmin:Rd'.format(epics_prefix))
-        sysref_period_max = poll_and_read_pv('{}:AT:ATJ1:JR:SysRefPeriodmax:Rd'.format(epics_prefix))
-
-        if sysref_period_min != sysref_period_max:
-            print('AppTopJesd1/JesdRx link not locked: SysRefPeriodmin = {}, SysRefPeriodmax = {}'.format(sysref_period_min, sysref_period_max))
-            link_locked = False
-
+        # End the loop when all the test passed
         if link_locked:
             break
 

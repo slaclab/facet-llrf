@@ -11,11 +11,11 @@
 # IOC name
 epicsEnvSet("IOC_NAME", "SIOC:B084:RF51")
 
-# PV Prefix
+# PV prefix
 epicsEnvSet("YCPSWASYN_PREFIX", "LLRFGEN2")
 
-# CPSW Port name
-epicsEnvSet("YCPSWASYN_PORT","YCPSWASYN_PORT")
+# CPSW port name
+epicsEnvSet("YCPSWASYN_PORT","YCPSWASYN")
 
 # Location to download the YAML file from the FPGA
 epicsEnvSet("YAML_DIR","firmware/LlrfGen2/yaml")
@@ -23,11 +23,14 @@ epicsEnvSet("YAML_DIR","firmware/LlrfGen2/yaml")
 # YAML file
 epicsEnvSet("YAML","${YAML_DIR}/000TopLevel.yaml")
 
-# Defaults Yaml file
-epicsEnvSet("DEFAULTS_FILE", "${YAML_DIR}/config/defaults.yaml")
+# Defaults yaml file
+epicsEnvSet("DEFAULTS_FILE", "${YAML_DIR}/config/defaults_cw.yaml")
 
-# FPGA IP Address
+# FPGA IP address
 epicsEnvSet("FPGA_IP","10.0.1.106")
+
+# llrfAmcAsyn port name
+epicsEnvSet("LLRFAMCASYN_PORT","LLRFAMCASYN")
 
 # ======================================
 # Start from TOP
@@ -41,12 +44,28 @@ cd ${TOP}
 dbLoadDatabase("dbd/llrf.dbd",0,0)
 llrf_registerRecordDeviceDriver(pdbbase) 
 
+# ==========================================
+# Create the CPSW root using the yamlLoader
+# ==========================================
+cpswLoadYamlFile("${YAML}", "NetIODev", "", "${FPGA_IP}")
+
+# ==========================================
+# Load application specific configurations
+# ==========================================
+# Load the defautl configuration
+cpswLoadConfigFile("${DEFAULTS_FILE}", "mmio")
+
 # ===========================================
 #              DRIVER SETUP
 # ===========================================
 
-## yamlLoader
-cpswLoadYamlFile("${YAML}", "NetIODev", "", "${FPGA_IP}")
+# Set llrfAmc log level (0: Debug, 1: Warning, 2: Error (default), 3: None)
+#LlrfAmcAsynSetLogLevel(2)
+
+## Configure the llrfAmcAsyn driver
+# LlrfAmcAsynConfig(
+#    Port Name)     # The name given to this port driver
+LlrfAmcAsynConfig("${LLRFAMCASYN_PORT}")
 
 # Set the location of the YCPSWASYN map files
 YCPSWASYNSetMapFilePath("firmware/maps")
@@ -63,22 +82,17 @@ YCPSWASYNSetPvMaxNameLen(100)
 #    Load dictionary)           # Dictionary file path with registers to load. An empty string will disable this function
 YCPSWASYNConfig("${YCPSWASYN_PORT}", "", "${YCPSWASYN_PREFIX}", "1", "")
 
-# ==========================================
-# Load application specific configurations
-# ==========================================
-# Load the defautl configuration
-cpswLoadConfigFile("${DEFAULTS_FILE}", "mmio")
-
-# ==========================================
-
 # ===========================================
 #               ASYN MASKS
 # ===========================================
-asynSetTraceMask("${YCPSWASYN_PORT}",, -1, 0)
+asynSetTraceMask("${YCPSWASYN_PORT}", -1, 0x01)
+asynSetTraceMask("${LLRFAMCASYN_PORT}", -1, 0x09)
 
 # ===========================================
 #               DB LOADING
 # ===========================================
+# llrfAmcAsyn database
+dbLoadRecords("db/llrfAmcAsyn.db", "P=${YCPSWASYN_PREFIX},PORT=${LLRFAMCASYN_PORT}")
 
 # **********************************************************************
 # **** Load iocAdmin databases to support IOC Health and monitoring ****
@@ -162,3 +176,6 @@ iocInit()
 # Note: the last arg cannot be set to 0
 #create_monitor_set("info_positions.req", 5 )
 #create_monitor_set("info_settings.req" , 5 )
+
+# Print the registers /mmio/AppTop/AppCore/Sysgen/LlrfDemod/amp
+dbgf LLRFGEN2:AT:AC:SG:RFDEM:amp:Rd

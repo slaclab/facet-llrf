@@ -34,14 +34,21 @@ mmio: &mmio
       at:
         offset: 0x80000000
       children: 
-        AppTopJesd:
+        AppTopJesd0:
           children:
             JesdRx:
+              <<: *JesdRx_6
               instantiate: true              
               #metadata:
               #  numRxLanes: &numRxLanes 6
+        AppTopJesd1:
+          children:
+            JesdRx:
+              <<: *JesdRx_6
+              instantiate: true              
             JesdTx:
-              instantiate: false              
+              <<: *JesdTx_7
+              instantiate: true
               #metadata: 
               #  numTxLanes: &numTxLanes 0              
         AppCore:

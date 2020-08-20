@@ -8,6 +8,8 @@ AmcMrLlrfUpConvert      AmcUC
 AmcMrLlrfGen2UpConvert  AmcG2UC
 AppCore                 AC
 AppTopJesd              ATJ
+AppTopJesd0             ATJ0
+AppTopJesd1             ATJ1
 AttHMC624               ATT
 AxiMemTester            AMT
 AxiMicronN25Q           AMN25Q
@@ -39,6 +41,7 @@ GthRxAlignCheck         GRAC
 Gthe3Channel            G3C
 IQWaveform              IQW
 JesdRx                  JR
+JesdTx                  JT
 LlrfDemod               RFDEM
 LlrfFeedbackWrapper     RFFW
 LlrfHls                 RFHLS 
