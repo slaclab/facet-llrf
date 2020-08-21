@@ -166,6 +166,18 @@ NetIODev:
          TDESTMux:
            TDEST: 0xC0
            stripHeader: yes
+     faultStream:
+       <<: *strm
+       at:
+         SRP:
+           protocolVersion: SRP_UDP_NONE
+         UDP:
+           port: 8193
+         RSSI: yes
+         depack: yes
+         TDESTMux:
+           TDEST: 0xC1
+           stripHeader: yes
      Stream0:
        class: Field
        at:
