@@ -11,7 +11,7 @@
 #once 000TopLevel.yaml
 #include AmcCarrierCore.yaml
 #include AmcCarrierDRAM.yaml
-#include AppTop.yaml
+#include AppTopIndependent.yaml
 
 # It is important to use the same parameters
 # for shared protocol modules (e.g., all RSSI
@@ -43,7 +43,7 @@ mmio: &mmio
             instantiate: false
     ##################################################
     AppTop:
-      <<: *AppTop
+      <<: *AppTopIndependent
       at:
         offset: 0x80000000
       children:
