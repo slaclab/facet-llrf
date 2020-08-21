@@ -26,8 +26,6 @@ connectionParameters:
     cumulativeAckTimeoutUS:   50000
     threadPriority:             82
 
-
-
 #MMIO range, will be attached to FPGA
 mmio: &mmio
   size: 0x100000000 # 4GB of address space
@@ -108,8 +106,6 @@ stream: &stream
   TDESTMux:
     stripHeader: yes
     TDEST: 0x80
-
-
 
 NetIODev:
   ipAddr: 10.0.1.105
