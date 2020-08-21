@@ -64,6 +64,13 @@ mmio: &mmio
           children:
             BLD:
               instantiate: false
+        DacSigGen:
+          children:
+            Waveform:
+              children:
+                MemoryArray:
+                  at:
+                    nelms: 0x1000
     ##################################################
 
 strm: &strm
