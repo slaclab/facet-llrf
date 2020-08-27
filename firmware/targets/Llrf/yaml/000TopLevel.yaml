@@ -142,8 +142,11 @@ NetIODev:
            protocolVersion: SRP_UDP_NONE
          UDP:
            port: 8193
-         RSSI: yes
-         depack: yes
+           numRxThreads: *udpThreads
+           threadPriority:  *udpPri
+         RSSI: *rssiParams
+         depack:
+           useDepack: yes
          TDESTMux:
            TDEST: 0xC0
            stripHeader: yes
@@ -154,8 +157,11 @@ NetIODev:
            protocolVersion: SRP_UDP_NONE
          UDP:
            port: 8193
-         RSSI: yes
-         depack: yes
+           numRxThreads: *udpThreads
+           threadPriority:  *udpPri
+         RSSI: *rssiParams
+         depack:
+           useDepack: yes
          TDESTMux:
            TDEST: 0xC1
            stripHeader: yes
