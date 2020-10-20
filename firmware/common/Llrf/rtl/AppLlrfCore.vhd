@@ -57,10 +57,10 @@ entity AppLlrfCore is
       -- Note: Asynchronous
       timingClk      : in  sl;
       trigPulse      : in  sl;
-      timeslot       : in  slv(2 downto 0);
+      timeslot       : in  slv(5 downto 0);
       timestamp      : in  slv(63 downto 0);
-      dmod           : in  slv(191 downto 0);
-      bsa            : in  slv(127 downto 0);
+      dmod           : in  slv(191 downto 0) := (others => '0');
+      bsa            : in  slv(127 downto 0) := (others => '0');
       trigDaqOut     : out slv(1 downto 0) := (others => '0');
 
       -- JESD ADC
@@ -451,7 +451,7 @@ begin
    dacSigCtrl(0).start <= (others => '0');
    dacSigCtrl(1).start <= (others => trigPulseSync);
 
-   timeslotIn(2 downto 0) <= timeslot;
+   timeslotIn <= timeslot(4 downto 0);
 
    U_MODEL : entity llrf_core.LlrfFeedbackWrapper
      generic map (

@@ -234,6 +234,10 @@ architecture mapping of AppCore is
    signal rtmStreamMaster      : AxiStreamMasterType;
    signal rtmStreamSlave       : AxiStreamSlaveType;
 
+   signal latchOneShot     : sl := '0';
+   signal timestampLatch   : slv(63 downto 0) := (others => '0');
+   signal timeslotLatch    : slv(5 downto 0)  := (others => '0');
+
    constant DEBUG_C : boolean := true;
 
    component ila_0
@@ -366,6 +370,28 @@ begin
    end generate;
 
 
+   U_LATCH_OS : entity surf.SynchronizerOneShot
+      generic map (
+         TPD_G         => TPD_G,
+         BYPASS_SYNC_G => true)
+      port map (
+         clk     => timingClk,
+         dataIn  => s_trigPulse(5),
+         dataOut => latchOneShot);
+
+   U_LATCH_TIMING : entity surf.RegisterVector
+      generic map (
+         TPD_G    => TPD_G,
+         WIDTH_G  => 70)
+      port map (
+         clk                 => timingClk,
+         en                  => latchOneShot,
+         sig_i(63 downto 0)  => timingBus.message.timeStamp,
+         sig_i(69 downto 64) => timingBus.message.control(0)(5 downto 0),
+         reg_o(63 downto 0)  => timestampLatch,
+         reg_o(69 downto 64) => timeslotLatch);
+
+
    ----------------
    -- SYSGEN Module
    ----------------
@@ -394,10 +420,10 @@ begin
          rfSwitch       => s_fpgaInterlock,
          timingClk      => timingClk,
          trigPulse      => s_trigPulse(0),
-         timeslot       => timingTrig.dmod(127 downto 125),
-         timestamp      => timingTrig.timestamp(63 downto 0),
-         dmod           => timingTrig.dmod(191 downto 0),
-	 bsa            => timingTrig.bsa(127 downto 0),
+         timeslot       => timeslotLatch,
+         timestamp      => timestampLatch,
+         --dmod           => timingTrig.dmod(191 downto 0),
+	 --bsa            => timingTrig.bsa(127 downto 0),
          trigDaqOut     => open,
          trigMode       => s_trigMode,
          -- DAC SigGen
