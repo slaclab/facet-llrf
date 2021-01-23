@@ -328,7 +328,7 @@ begin
          RTM_ETH_G       => false,        -- false = 10GbE over backplane
          CORE_TRIGGERS_G => 12,
          AXIL_RINGB_G    => false,        -- false = no AxiLiteRingBuffer from TimingCore
-         CLKSEL_MODE_G   => "LCLSI",
+         CLKSEL_MODE_G   => "SELECT",
          APP_TYPE_G      => APP_NULL_TYPE_C)  -- Configured by application (refer to AmcCarrierPkg for list of all application types
       port map (
          ----------------------
