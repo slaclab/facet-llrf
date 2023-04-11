@@ -12,6 +12,8 @@
 #include AmcCarrierCore.yaml
 #include AmcCarrierDRAM.yaml
 #include AppTopIndependent.yaml
+#include JesdRx_6.yaml
+#include JesdTx_7.yaml
 
 # It is important to use the same parameters
 # for shared protocol modules (e.g., all RSSI
@@ -64,6 +66,27 @@ mmio: &mmio
           children:
             BLD:
               instantiate: false
+            AmcMrLlrfGen2UpConvert:
+              children:
+                Dac38J84:
+                  children:
+                    InitDac:
+                      sequence:
+                        # Disable TX
+                        - entry:    EnableTx
+                          value:    0x0
+
+                        # Disable and initialize JESD
+                        - entry:    InitJesd
+                          value:    0x1E
+
+                        # Enable JESD
+                        - entry:    InitJesd
+                          value:    0x1
+
+                        # Enable TX
+                        - entry:    EnableTx
+                          value:    0x1               
         DacSigGen:
           children:
             Waveform:
