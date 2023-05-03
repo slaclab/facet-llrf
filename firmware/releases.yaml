@@ -5,8 +5,8 @@ TopRoguePackage: llrf-hls
 
 Targets:
 ################################################################################
-  LlrfGen2:
-    ImageDir: targets/LlrfGen2/images
+  FacetLlrfGen2:
+    ImageDir: targets/FacetLlrfGen2/images
     Extensions:
       - mcs
       - cpsw.tar.gz
