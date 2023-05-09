@@ -5,8 +5,8 @@ TopRoguePackage: lcls-nc-llrf
 
 Targets:
 ################################################################################
-  LclsNcLlrfGen:
-    ImageDir: targets/LclsNcLlrfGen/images
+  LclsNcLlrf:
+    ImageDir: targets/LclsNcLlrf/images
     Extensions:
       - mcs
       - cpsw.tar.gz
@@ -50,6 +50,16 @@ Releases:
       - LclsNcLlrfGen1
       #######################################
       - LclsNcLlrfGen2
+      #######################################
+    Types:
+      - FW_only
+  Gen1:
+    Primary: True
+    Targets:
+      #######################################
+      - Llrf
+      #######################################
+      - LclsNcLlrfGen1
       #######################################
     Types:
       - FW_only
