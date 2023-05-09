@@ -1,12 +1,37 @@
 
 GitBase: ..
 
-TopRoguePackage: llrf-hls
+TopRoguePackage: lcls-nc-llrf
 
 Targets:
 ################################################################################
-  FacetLlrfGen2:
-    ImageDir: targets/FacetLlrfGen2/images
+  LclsNcLlrfGen:
+    ImageDir: targets/LclsNcLlrfGen/images
+    Extensions:
+      - mcs
+      - cpsw.tar.gz
+################################################################################
+  LclsNcLlrfGen1:
+    ImageDir: targets/LclsNcLlrfGen1/images
+    Extensions:
+      - mcs
+      - cpsw.tar.gz
+################################################################################
+  LclsNcLlrfGen2:
+    ImageDir: targets/LclsNcLlrfGen2/images
+    Extensions:
+      - mcs
+      - cpsw.tar.gz
+################################################################################
+################################################################################
+  Llrf:
+    ImageDir: targets/Llrf/images
+    Extensions:
+      - mcs
+      - cpsw.tar.gz
+################################################################################
+  LlrfGen2:
+    ImageDir: targets/LlrfGen2/images
     Extensions:
       - mcs
       - cpsw.tar.gz
@@ -16,7 +41,27 @@ Releases:
     Primary: True
     Targets:
       #######################################
+      - Llrf
+      #######################################
       - LlrfGen2
+      #######################################
+      - LclsNcLlrf
+      #######################################
+      - LclsNcLlrfGen1
+      #######################################
+      - LclsNcLlrfGen2
+      #######################################
+    Types:
+      - FW_only
+  Gen2:
+    Primary: True
+    Targets:
+      #######################################
+      - LlrfGen2
+      #######################################
+      - LclsNcLlrf
+      #######################################
+      - LclsNcLlrfGen2
       #######################################
     Types:
       - FW_only
